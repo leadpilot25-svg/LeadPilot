@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="LeadPilot"/>
+<title>LeadPilot</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════
+   RESET
+══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+:root{
+  --g:#0FA573;--gd:#097A54;--gl:#D6F5E9;
+  --r:#E53E2C;--rl:#FDECEA;
+  --a:#E07B00;--al:#FFF0D6;
+  --b:#1A6FD4;--bl:#E3EEFB;
+  --tx:#0D0D0B;--tx2:#666660;--tx3:#AAAA A4;
+  --bg:#F7F6F2;--card:#FFFFFF;
+  --bd:#E8E7E2;
+  --fn:'Plus Jakarta Sans',sans-serif;
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:16px;
+  -webkit-font-smoothing:antialiased}
+
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+.app{
+  display:flex;flex-direction:column;
+  height:100dvh;max-width:480px;margin:0 auto;
+  position:relative;overflow:hidden;
+}
+
+/* ══════════════════════════════════════════
+   TOP BAR
+══════════════════════════════════════════ */
+.topbar{
+  background:var(--g);
+  padding:calc(var(--safe-t) + 14px) 18px 14px;
+  flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.topbar::after{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:160px;height:160px;border-radius:50%;
+  background:rgba(255,255,255,0.07);pointer-events:none;
+}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.top-left h1{font-size:26px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1}
+.top-left p{font-size:13px;color:rgba(255,255,255,.65);margin-top:3px;font-weight:500}
+.add-lead-btn{
+  background:#fff;color:var(--gd);
+  border-radius:14px;padding:12px 18px;
+  font-size:15px;font-weight:700;
+  border:none;cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+  display:flex;align-items:center;gap:6px;
+  white-space:nowrap;
+}
+.add-lead-btn:active{transform:scale(.96)}
+
+/* ══════════════════════════════════════════
+   STATS
+══════════════════════════════════════════ */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:8px;padding:14px 14px 0;flex-shrink:0;
+}
+.stat{
+  background:var(--card);border-radius:14px;
+  padding:12px 6px;text-align:center;
+  border:1.5px solid var(--bd);
+}
+.stat-num{font-size:28px;font-weight:800;line-height:1}
+.stat-lbl{font-size:11px;font-weight:600;color:var(--tx2);margin-top:4px;text-transform:uppercase;letter-spacing:.3px}
+.c-r{color:var(--r)}.c-a{color:var(--a)}.c-g{color:var(--g)}.c-b{color:var(--b)}
+
+/* ══════════════════════════════════════════
+   SEARCH
+══════════════════════════════════════════ */
+.search-wrap{padding:12px 14px 0;flex-shrink:0}
+.search-box{
+  display:flex;align-items:center;gap:10px;
+  background:var(--card);border-radius:14px;
+  padding:13px 16px;border:1.5px solid var(--bd);
+}
+.search-box input{
+  flex:1;border:none;outline:none;
+  font-size:15px;font-family:var(--fn);
+  background:transparent;color:var(--tx);font-weight:500;
+}
+.search-box input::placeholder{color:var(--tx2)}
+
+/* ══════════════════════════════════════════
+   TABS
+══════════════════════════════════════════ */
+.tabs-wrap{padding:12px 14px 0;flex-shrink:0}
+.tabs{
+  display:flex;gap:6px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex-shrink:0;padding:10px 18px;border-radius:12px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  background:var(--card);color:var(--tx2);
+  border:1.5px solid var(--bd);white-space:nowrap;
+  transition:all .15s;
+}
+.tab.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+.tab .tbadge{
+  display:inline-block;background:var(--r);color:#fff;
+  border-radius:20px;font-size:11px;font-weight:700;
+  padding:1px 6px;margin-left:5px;vertical-align:middle;
+}
+.tab.active .tbadge{background:rgba(255,255,255,.25)}
+
+/* ══════════════════════════════════════════
+   LEAD LIST
+══════════════════════════════════════════ */
+.list{
+  flex:1;overflow-y:auto;
+  padding:12px 14px calc(12px + var(--safe-b));
+  display:flex;flex-direction:column;gap:12px;
+  -webkit-overflow-scrolling:touch;
+}
+.list::-webkit-scrollbar{display:none}
+
+/* ══════════════════════════════════════════
+   LEAD CARD
+══════════════════════════════════════════ */
+.card{
+  background:var(--card);border-radius:20px;
+  border:1.5px solid var(--bd);overflow:hidden;
+  transition:box-shadow .2s;
+}
+.card.overdue{border-left:5px solid var(--r)}
+.card.today{border-left:5px solid var(--a)}
+.card.upcoming{border-left:5px solid var(--g)}
+
+/* Card Header */
+.card-hd{padding:16px 16px 12px;display:flex;align-items:flex-start;gap:14px}
+.av{
+  width:52px;height:52px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:800;flex-shrink:0;
+}
+.av-g{background:var(--gl);color:var(--gd)}
+.av-b{background:var(--bl);color:var(--b)}
+.av-a{background:var(--al);color:var(--a)}
+.av-r{background:var(--rl);color:var(--r)}
+
+.card-info{flex:1;min-width:0}
+.card-name{font-size:18px;font-weight:800;color:var(--tx);line-height:1.2}
+.card-sub{font-size:14px;color:var(--tx2);font-weight:500;margin-top:4px;line-height:1.4}
+.card-meta{font-size:13px;color:var(--tx2);margin-top:4px;font-weight:500}
+
+.badge{
+  font-size:12px;font-weight:700;padding:5px 10px;
+  border-radius:10px;white-space:nowrap;flex-shrink:0;margin-top:2px;
+}
+.badge-r{background:var(--rl);color:var(--r)}
+.badge-a{background:var(--al);color:var(--a)}
+.badge-g{background:var(--gl);color:var(--gd)}
+.badge-b{background:var(--bl);color:var(--b)}
+
+/* ══════════════════════════════════════════
+   BIG ACTION BUTTONS
+══════════════════════════════════════════ */
+.card-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 14px}
+.cbtn{
+  padding:16px 10px;border-radius:14px;
+  font-size:16px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border:none;cursor:pointer;transition:transform .1s,opacity .1s;
+  letter-spacing:-.1px;
+}
+.cbtn:active{transform:scale(.96);opacity:.85}
+.cbtn-wa{background:var(--gl);color:var(--gd)}
+.cbtn-call{background:var(--bl);color:var(--b)}
+.cbtn-icon{font-size:20px}
+
+/* ══════════════════════════════════════════
+   EXPAND / UPDATE
+══════════════════════════════════════════ */
+.expand-row{
+  border-top:1.5px solid var(--bd);
+  display:flex;
+}
+.expand-btn{
+  flex:1;padding:14px;font-size:14px;font-weight:700;
+  color:var(--tx2);background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.expand-btn:active{background:var(--bg)}
+
+.detail{
+  border-top:1.5px solid var(--bd);
+  display:none;flex-direction:column;gap:14px;
+  padding:16px;
+}
+.detail.open{display:flex}
+
+/* Info chips */
+.info-chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  background:var(--bg);border-radius:10px;
+  padding:8px 12px;
+}
+.chip-lbl{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px}
+.chip-val{font-size:14px;font-weight:600;color:var(--tx);margin-top:2px}
+
+.section-hd{font-size:12px;font-weight:800;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
+
+/* Fields */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:14px;font-weight:700;color:var(--tx)}
+.field input,.field select,.field textarea{
+  width:100%;padding:14px 14px;border-radius:12px;
+  border:1.5px solid var(--bd);background:var(--bg);
+  font-size:16px;font-family:var(--fn);font-weight:500;color:var(--tx);
+  -webkit-appearance:none;appearance:none;
+}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;
+}
+.field input:focus,.field select:focus{border-color:var(--g);outline:none;background:#fff}
+
+/* Done checkbox row */
+.done-row{
+  display:flex;align-items:center;gap:14px;
+  background:var(--bg);border-radius:14px;padding:16px;
+}
+.done-row input[type=checkbox]{
+  width:26px;height:26px;accent-color:var(--g);cursor:pointer;flex-shrink:0;
+}
+.done-row label{font-size:16px;font-weight:700;color:var(--tx);cursor:pointer}
+
+/* Save button */
+.save-btn{
+  width:100%;background:var(--g);color:#fff;
+  border-radius:14px;padding:18px;
+  font-size:18px;font-weight:800;border:none;cursor:pointer;
+  letter-spacing:-.2px;
+}
+.save-btn:active{background:var(--gd)}
+.save-btn:disabled{opacity:.5}
+.saved-ok{text-align:center;color:var(--g);font-size:15px;font-weight:700;padding:4px 0}
+
+/* ══════════════════════════════════════════
+   EMPTY / LOADING
+══════════════════════════════════════════ */
+.empty{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:60px 24px;text-align:center;gap:10px;
+}
+.empty-ico{font-size:56px;opacity:.3}
+.empty-ttl{font-size:20px;font-weight:800;color:var(--tx)}
+.empty-sub{font-size:15px;color:var(--tx2);line-height:1.5;max-width:260px;font-weight:500}
+
+.loading{display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:60px 24px;gap:14px;color:var(--tx2)}
+.spin{width:36px;height:36px;border:3px solid var(--bd);
+  border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ══════════════════════════════════════════
+   BOTTOM SHEET (Add Lead)
+══════════════════════════════════════════ */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:300;display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .22s;
+}
+.overlay.open{opacity:1;pointer-events:all}
+.sheet{
+  background:#fff;border-radius:24px 24px 0 0;
+  width:100%;max-height:92dvh;overflow-y:auto;
+  padding:0 0 calc(20px + var(--safe-b));
+  transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);
+}
+.overlay.open .sheet{transform:translateY(0)}
+.sheet-handle-wrap{padding:16px 0 8px;display:flex;justify-content:center}
+.sheet-handle{width:40px;height:5px;background:#DDD;border-radius:3px}
+.sheet-title{font-size:22px;font-weight:800;padding:0 20px 16px;color:var(--tx)}
+.sheet-body{padding:0 20px;display:flex;flex-direction:column;gap:14px}
+.sh-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.sh-field{display:flex;flex-direction:column;gap:6px}
+.sh-field label{font-size:14px;font-weight:700;color:var(--tx)}
+.sh-field input,.sh-field select{
+  width:100%;padding:15px 14px;border-radius:12px;
+  border:1.5px solid var(--bd);background:var(--bg);
+  font-size:16px;font-family:var(--fn);font-weight:500;color:var(--tx);
+  -webkit-appearance:none;appearance:none;
+}
+.sh-field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;
+}
+.sh-field input:focus,.sh-field select:focus{border-color:var(--g);outline:none;background:#fff}
+
+.sheet-submit{
+  margin:18px 20px 0;width:calc(100% - 40px);
+  background:var(--g);color:#fff;border-radius:14px;
+  padding:20px;font-size:18px;font-weight:800;border:none;cursor:pointer;
+}
+.sheet-submit:active{background:var(--gd)}
+.sheet-cancel{
+  margin:10px 20px 0;width:calc(100% - 40px);
+  background:var(--bg);color:var(--tx2);border-radius:14px;
+  padding:16px;font-size:16px;font-weight:700;border:1.5px solid var(--bd);cursor:pointer;
+}
+
+/* ══════════════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════════════ */
+.bnav{
+  display:flex;background:#fff;
+  border-top:1.5px solid var(--bd);
+  padding:8px 0 calc(8px + var(--safe-b));flex-shrink:0;
+}
+.ni{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;padding:6px 0;color:var(--tx2);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.3px;
+}
+.ni.active{color:var(--g)}
+.ni-ico{font-size:26px;line-height:1}
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:calc(90px + var(--safe-b));
+  left:50%;transform:translateX(-50%) translateY(20px);
+  background:#111;color:#fff;padding:13px 24px;
+  border-radius:50px;font-size:14px;font-weight:700;
+  z-index:500;opacity:0;transition:all .22s;
+  pointer-events:none;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="top-left">
+        <h1>LeadPilot</h1>
+        <p id="top-date"></p>
+      </div>
+      <button class="add-lead-btn" onclick="openSheet()">＋ Add Lead</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num c-r" id="s-ov">—</div><div class="stat-lbl">Overdue</div></div>
+    <div class="stat"><div class="stat-num c-a" id="s-td">—</div><div class="stat-lbl">Today</div></div>
+    <div class="stat"><div class="stat-num c-g" id="s-up">—</div><div class="stat-lbl">Soon</div></div>
+    <div class="stat"><div class="stat-num c-b" id="s-al">—</div><div class="stat-lbl">Total</div></div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <span style="font-size:20px">🔍</span>
+      <input id="search" placeholder="Search name, phone, interest…" oninput="renderList()"/>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <div class="tab active" data-tab="today" onclick="switchTab(this)">Today <span class="tbadge" id="tb-t">0</span></div>
+      <div class="tab" data-tab="overdue" onclick="switchTab(this)">Overdue <span class="tbadge" id="tb-o">0</span></div>
+      <div class="tab" data-tab="all" onclick="switchTab(this)">All Leads</div>
+      <div class="tab" data-tab="upcoming" onclick="switchTab(this)">Upcoming</div>
+      <div class="tab" data-tab="done" onclick="switchTab(this)">Done</div>
+    </div>
+  </div>
+
+  <!-- LEAD LIST -->
+  <div class="list" id="lead-list"></div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <div class="ni active" id="ni-today" onclick="switchTabKey('today')"><div class="ni-ico">📋</div>Today</div>
+    <div class="ni" onclick="switchTabKey('all')"><div class="ni-ico">👥</div>All</div>
+    <div class="ni" onclick="openSheet()"><div class="ni-ico">➕</div>Add</div>
+    <div class="ni" onclick="loadLeads()"><div class="ni-ico">🔄</div>Refresh</div>
+    <div class="ni" onclick="switchTabKey('done')"><div class="ni-ico">✅</div>Done</div>
+  </div>
+</div>
+
+<!-- ADD LEAD SHEET -->
+<div class="overlay" id="overlay" onclick="overlayTap(event)">
+  <div class="sheet">
+    <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+    <div class="sheet-title">Add New Lead</div>
+    <div class="sheet-body">
+
+      <div class="sh-field"><label>Full Name *</label>
+        <input id="fn" placeholder="Client full name"/></div>
+
+      <div class="sh-row">
+        <div class="sh-field"><label>Phone *</label>
+          <input id="fp" type="tel" placeholder="+91 98765 43210"/></div>
+        <div class="sh-field"><label>WhatsApp</label>
+          <input id="fw" type="tel" placeholder="If different"/></div>
+      </div>
+
+      <div class="sh-field"><label>Email</label>
+        <input id="fe" type="email" placeholder="client@email.com"/></div>
+
+      <div class="sh-field"><label>Interested In</label>
+        <select id="fi">
+          <option value="">Select interest…</option>
+          <option>2BHK Apartment</option>
+          <option>3BHK Apartment</option>
+          <option>Villa</option>
+          <option>Plot</option>
+          <option>Commercial</option>
+          <option>Office Space</option>
+          <option>Shop</option>
+          <option>Other</option>
+        </select></div>
+
+      <div class="sh-row">
+        <div class="sh-field"><label>Budget</label>
+          <select id="fb">
+            <option value="">Budget range…</option>
+            <option>Below ₹20 Lakhs</option>
+            <option>₹20 – ₹40 Lakhs</option>
+            <option>₹40 Lakhs – ₹60 Lakhs</option>
+            <option>₹60 Lakhs – ₹80 Lakhs</option>
+            <option>₹80 Lakhs – ₹1 Cr</option>
+            <option>₹1 Cr – ₹1.5 Cr</option>
+            <option>Above ₹1.5 Cr</option>
+          </select></div>
+        <div class="sh-field"><label>Lead Source</label>
+          <select id="fs">
+            <option value="">Source…</option>
+            <option>Facebook Ad</option>
+            <option>Instagram Ad</option>
+            <option>Google Ad</option>
+            <option>WhatsApp</option>
+            <option>Referral</option>
+            <option>Walk-in</option>
+            <option>Other</option>
+          </select></div>
+      </div>
+
+      <div class="sh-field"><label>Project</label>
+        <input id="fpr" placeholder="Project name"/></div>
+
+      <div class="sh-field"><label>Preferred Location</label>
+        <input id="fl" placeholder="Area/locality"/></div>
+
+      <div class="sh-field"><label>Follow-up Date</label>
+        <input id="fd" type="date"/></div>
+
+      <div class="sh-field"><label>Your Name (Agent)</label>
+        <input id="fan" placeholder="Agent name"/></div>
+
+    </div>
+    <button class="sheet-submit" onclick="submitLead()">💾 Save Lead</button>
+    <button class="sheet-cancel" onclick="closeSheet()">Cancel</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════
+// ⚙️  PASTE YOUR WEB APP URL BELOW
+// ════════════════════════════════════════════════════
+const API = "YOUR_WEB_APP_URL_HERE";
+// Example:
+// const API = "https://script.google.com/macros/s/AKfycby.../exec";
+
+// ════════════════════════════════════════════════════
+// DROPDOWN OPTIONS (match your sheet exactly)
+// ════════════════════════════════════════════════════
+const OPT = {
+  leadStatus: ["","New","Interested","Site Visit Scheduled","Site Visit Done",
+    "Negotiation","Converted","Lost","On Hold","Follow Up"],
+
+  callResult: ["","Interested","Not Interested","Call Back Later",
+    "No Answer","Wrong Number","Site Visit Booked","Converted","Lost"],
+
+  priority: ["","🔥 Hot","♨️ Warm","❄️ Cold"],
+
+  interest: ["","2BHK Apartment","3BHK Apartment","Villa","Plot",
+    "Commercial","Office Space","Shop","Other"],
+
+  budget: ["","Below ₹20 Lakhs","₹20 – ₹40 Lakhs","₹40 Lakhs – ₹60 Lakhs",
+    "₹60 Lakhs – ₹80 Lakhs","₹80 Lakhs – ₹1 Cr","₹1 Cr – ₹1.5 Cr","Above ₹1.5 Cr"],
+};
+
+function opts(list, current) {
+  return list.map(o => `<option value="${e(o)}"${current===o?" selected":""}>${o||"Select…"}</option>`).join("");
+}
+
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+let leads   = [];
+let curTab  = "today";
+let expanded= new Set();
+const TODAY = new Date().toISOString().split("T")[0];
+
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  const d = new Date();
+  document.getElementById("top-date").textContent =
+    d.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"});
+  document.getElementById("fd").value = TODAY;
+  loadLeads();
+});
+
+// ════════════════════════════════════════════════════
+// LOAD LEADS
+// ════════════════════════════════════════════════════
+async function loadLeads() {
+  showLoading();
+  try {
+    // Add timestamp to avoid cached response
+    const url = API + (API.includes("?") ? "&" : "?") + "action=getLeads&t=" + Date.now();
+    const res = await fetch(url, { method:"GET", redirect:"follow" });
+    const raw = await res.text();
+    leads = JSON.parse(raw).map(norm);
+    renderList();
+  } catch(err) {
+    document.getElementById("lead-list").innerHTML = `
+      <div class="empty">
+        <div class="empty-ico">⚠️</div>
+        <div class="empty-ttl">Cannot load leads</div>
+        <div class="empty-sub">Check your API URL in the HTML file.<br/>Error: ${err.message}</div>
+      </div>`;
+  }
+}
+
+function norm(r) {
+  const fd  = toDate(r.followDate);
+  let status = "new";
+  if (fd) {
+    if      (fd < TODAY) status = "overdue";
+    else if (fd === TODAY) status = "today";
+    else   status = "upcoming";
+  }
+  const done   = r.callDone === true || String(r.callDone).toLowerCase() === "true";
+  const result = s(r.callResult);
+  const isDone = done && result.trim() !== "";
+  const ph     = s(r.phone).replace(/\D/g,"");
+  const wa     = s(r.whatsapp).replace(/\D/g,"") || ph;
+
+  return {
+    rowIndex  :r.rowIndex,
+    name      :s(r.name)||"—",
+    phone     :ph,whatsapp:wa,
+    email     :s(r.email),
+    interest  :s(r.interest),
+    budget    :s(r.budget),
+    project   :s(r.project),
+    source    :s(r.source),
+    location  :s(r.location),
+    remarks   :s(r.remarks),
+    leadStatus:s(r.leadStatus),
+    followDate:fd,
+    callDone  :done,
+    callResult:result,
+    callResult2:s(r.callResult2),
+    propValue :s(r.propValue),
+    commission:s(r.commission),
+    priority  :s(r.priority),
+    agentName :s(r.agentName),
+    status, isDone,
+    initials  :ini(s(r.name)),
+    color     :col(s(r.name)),
+  };
+}
+
+// ════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════
+function renderList() {
+  updateStats();
+  const q = (document.getElementById("search").value||"").toLowerCase();
+  const fl = filter(curTab).filter(l =>
+    !q || l.name.toLowerCase().includes(q) ||
+    l.phone.includes(q) || l.interest.toLowerCase().includes(q) ||
+    l.location.toLowerCase().includes(q) || l.source.toLowerCase().includes(q)
+  );
+  const el = document.getElementById("lead-list");
+  if (!fl.length) { el.innerHTML = emptyHTML(); return; }
+  el.innerHTML = fl.map(cardHTML).join("");
+}
+
+function filter(t) {
+  if (t==="today")    return leads.filter(l=>(l.status==="today"||l.status==="overdue")&&!l.isDone);
+  if (t==="overdue")  return leads.filter(l=>l.status==="overdue"&&!l.isDone);
+  if (t==="upcoming") return leads.filter(l=>l.status==="upcoming"&&!l.isDone);
+  if (t==="done")     return leads.filter(l=>l.isDone);
+  return leads;
+}
+
+function updateStats() {
+  const ov=leads.filter(l=>l.status==="overdue"&&!l.isDone).length;
+  const td=leads.filter(l=>l.status==="today"&&!l.isDone).length;
+  const up=leads.filter(l=>l.status==="upcoming"&&!l.isDone).length;
+  document.getElementById("s-ov").textContent=ov;
+  document.getElementById("s-td").textContent=td;
+  document.getElementById("s-up").textContent=up;
+  document.getElementById("s-al").textContent=leads.length;
+  document.getElementById("tb-t").textContent=td+ov;
+  document.getElementById("tb-o").textContent=ov;
+}
+
+function cardHTML(l) {
+  const isExp = expanded.has(l.rowIndex);
+  const ph    = l.phone ? "+"+l.phone : "—";
+  const wa    = l.whatsapp || l.phone;
+  const fd    = l.followDate ? fmt(l.followDate) : "Not set";
+  const bCls  = l.isDone?"badge-g":l.status==="overdue"?"badge-r":l.status==="today"?"badge-a":l.status==="upcoming"?"badge-g":"badge-b";
+  const bTxt  = l.isDone?"✓ Done":l.status==="overdue"?"🔴 Overdue":l.status==="today"?"🟡 Today":l.status==="upcoming"?"🟢 Soon":"🔵 New";
+
+  return `
+<div class="card ${l.isDone?"":""+l.status}" id="c${l.rowIndex}">
+  <div class="card-hd">
+    <div class="av ${l.color}">${l.initials}</div>
+    <div class="card-info">
+      <div class="card-name">${e(l.name)}</div>
+      <div class="card-sub">${e(l.interest)||"—"} &nbsp;·&nbsp; ${e(l.budget)||"—"}</div>
+      <div class="card-meta">${ph} &nbsp;·&nbsp; Follow: ${fd}</div>
+    </div>
+    <span class="badge ${bCls}">${bTxt}</span>
+  </div>
+
+  <div class="card-btns">
+    <button class="cbtn cbtn-wa" onclick="openWA('${wa}','${e(l.name)}')">
+      <span class="cbtn-icon">📲</span> WhatsApp
+    </button>
+    <button class="cbtn cbtn-call" onclick="openCall('${l.phone}')">
+      <span class="cbtn-icon">📞</span> Call
+    </button>
+  </div>
+
+  <div class="expand-row">
+    <button class="expand-btn" onclick="toggleExp(${l.rowIndex})">
+      ${isExp ? "▲ Close" : "▼ Update Lead"}
+    </button>
+  </div>
+
+  <div class="detail ${isExp?"open":""}" id="dp${l.rowIndex}">
+
+    <div class="info-chips">
+      ${l.source   ? `<div class="chip"><div class="chip-lbl">Source</div><div class="chip-val">${e(l.source)}</div></div>` : ""}
+      ${l.location ? `<div class="chip"><div class="chip-lbl">Location</div><div class="chip-val">${e(l.location)}</div></div>` : ""}
+      ${l.project  ? `<div class="chip"><div class="chip-lbl">Project</div><div class="chip-val">${e(l.project)}</div></div>` : ""}
+      ${l.agentName? `<div class="chip"><div class="chip-lbl">Agent</div><div class="chip-val">${e(l.agentName)}</div></div>` : ""}
+    </div>
+    ${l.remarks ? `<div class="chip" style="width:100%"><div class="chip-lbl">Remarks</div><div class="chip-val" style="font-weight:500">${e(l.remarks)}</div></div>` : ""}
+
+    <div class="section-hd">Update after call</div>
+
+    <div class="field"><label>Lead Status</label>
+      <select id="st${l.rowIndex}">${opts(OPT.leadStatus,l.leadStatus)}</select></div>
+
+    <div class="field"><label>Call Result</label>
+      <select id="cr${l.rowIndex}">${opts(OPT.callResult,l.callResult)}</select></div>
+
+    <div class="field"><label>Next Follow-up Date</label>
+      <input type="date" id="nf${l.rowIndex}" value="${l.followDate||""}"/></div>
+
+    <div class="field"><label>Priority</label>
+      <select id="pr${l.rowIndex}">${opts(OPT.priority,l.priority)}</select></div>
+
+    <div class="field"><label>Property Value (₹)</label>
+      <input id="pv${l.rowIndex}" value="${e(l.propValue)}" placeholder="e.g. 75,00,000"/></div>
+
+    <div class="field"><label>Commission %</label>
+      <input id="cm${l.rowIndex}" value="${e(l.commission)}" placeholder="e.g. 2"/></div>
+
+    <div class="done-row">
+      <input type="checkbox" id="cd${l.rowIndex}" ${l.callDone?"checked":""}
+        onchange="chkDone(${l.rowIndex})"/>
+      <label for="cd${l.rowIndex}">Mark Call as Done ✓</label>
+    </div>
+
+    <button class="save-btn" id="sb${l.rowIndex}" onclick="saveLead(${l.rowIndex})">
+      💾 Save Update
+    </button>
+    <div class="saved-ok" id="sm${l.rowIndex}" style="display:none">✓ Saved successfully!</div>
+  </div>
+</div>`;
+}
+
+function emptyHTML() {
+  const m = {
+    today   :["✅","All clear for today!","No follow-ups due. You're on top of it."],
+    overdue :["🎉","No overdue leads!","Everything is on track."],
+    upcoming:["📅","No upcoming leads","Schedule follow-ups to see them here."],
+    done    :["📁","No done leads yet","Mark calls done to see them here."],
+    all     :["👥","No leads yet","Add your first lead using the + button."],
+  }[curTab]||["👥","No leads",""];
+  return `<div class="empty"><div class="empty-ico">${m[0]}</div><div class="empty-ttl">${m[1]}</div><div class="empty-sub">${m[2]}</div></div>`;
+}
+
+function showLoading() {
+  document.getElementById("lead-list").innerHTML =
+    `<div class="loading"><div class="spin"></div>Loading your leads…</div>`;
+}
+
+// ════════════════════════════════════════════════════
+// SAVE LEAD UPDATE
+// ════════════════════════════════════════════════════
+async function saveLead(ri) {
+  const callDone   = document.getElementById("cd"+ri).checked;
+  const callResult = document.getElementById("cr"+ri).value;
+  const followDate = document.getElementById("nf"+ri).value;
+  const leadStatus = document.getElementById("st"+ri).value;
+  const priority   = document.getElementById("pr"+ri).value;
+  const propValue  = document.getElementById("pv"+ri).value;
+  const commission = document.getElementById("cm"+ri).value;
+
+  if (callDone && !callResult) {
+    toast("⚠️ Select a call result first");
+    document.getElementById("cd"+ri).checked = false;
+    return;
+  }
+
+  const btn = document.getElementById("sb"+ri);
+  btn.disabled = true; btn.textContent = "Saving…";
+
+  try {
+    await fetch(API, {
+      method:"POST",
+      mode:"no-cors",
+      body:JSON.stringify({action:"updateLead",rowIndex:ri,
+        callDone,callResult,followDate,leadStatus,priority,propValue,commission})
+    });
+
+    const l = leads.find(x=>x.rowIndex===ri);
+    if (l) {
+      Object.assign(l,{callDone,callResult,followDate,leadStatus,priority,propValue,commission});
+      if (!followDate) l.status="new";
+      else if (followDate<TODAY) l.status="overdue";
+      else if (followDate===TODAY) l.status="today";
+      else l.status="upcoming";
+      l.isDone = callDone && callResult.trim()!=="";
+    }
+
+    const sm = document.getElementById("sm"+ri);
+    if(sm){sm.style.display="block";setTimeout(()=>sm.style.display="none",2500);}
+    toast("✓ Lead updated!");
+    renderList();
+  } catch(err) {
+    toast("Save failed — check connection");
+  } finally {
+    btn.disabled=false; btn.textContent="💾 Save Update";
+  }
+}
+
+// ════════════════════════════════════════════════════
+// ADD NEW LEAD
+// ════════════════════════════════════════════════════
+async function submitLead() {
+  const name = document.getElementById("fn").value.trim();
+  const phone= document.getElementById("fp").value.trim();
+  if (!name) { toast("⚠️ Name is required"); return; }
+  if (!phone){ toast("⚠️ Phone is required"); return; }
+
+  const btn = document.querySelector(".sheet-submit");
+  btn.textContent = "Saving…"; btn.disabled = true;
+
+  const data = {
+    action:"addLead",
+    name, phone,
+    whatsapp  : document.getElementById("fw").value.trim() || phone,
+    email     : document.getElementById("fe").value.trim(),
+    interest  : document.getElementById("fi").value,
+    budget    : document.getElementById("fb").value,
+    source    : document.getElementById("fs").value || "Manual entry",
+    project   : document.getElementById("fpr").value.trim(),
+    location  : document.getElementById("fl").value.trim(),
+    followDate: document.getElementById("fd").value,
+    agentName : document.getElementById("fan").value.trim(),
+  };
+
+  try {
+    // Use no-cors mode so sheet CORS header doesn't block it
+    await fetch(API, {
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain"},
+      body:JSON.stringify(data)
+    });
+
+    // Optimistically add to local list
+    const nl = norm({...data, rowIndex: Date.now(), callDone:false, callResult:""});
+    leads.unshift(nl);
+
+    // Clear form
+    ["fn","fp","fw","fe","fpr","fl","fan"].forEach(id=>document.getElementById(id).value="");
+    ["fi","fb","fs"].forEach(id=>document.getElementById(id).selectedIndex=0);
+    document.getElementById("fd").value = TODAY;
+
+    closeSheet();
+    renderList();
+    toast("✓ Lead added!");
+    // Reload from sheet after 3 seconds to get real row index
+    setTimeout(loadLeads, 3000);
+  } catch(err) {
+    toast("⚠️ Could not add lead");
+  } finally {
+    btn.textContent="💾 Save Lead"; btn.disabled=false;
+  }
+}
+
+// ════════════════════════════════════════════════════
+// UI HELPERS
+// ════════════════════════════════════════════════════
+function toggleExp(ri) {
+  if(expanded.has(ri)) expanded.delete(ri); else expanded.add(ri);
+  renderList();
+  setTimeout(()=>{
+    const el=document.getElementById("c"+ri);
+    if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+  },80);
+}
+
+function switchTab(el) {
+  curTab=el.dataset.tab;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));
+  renderList();
+}
+
+function switchTabKey(key) {
+  const el=document.querySelector(`[data-tab="${key}"]`);
+  if(el) switchTab(el);
+  const ni=document.getElementById("ni-"+key);
+  if(ni){document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));ni.classList.add("active");}
+}
+
+function openSheet() { document.getElementById("overlay").classList.add("open"); }
+function closeSheet() { document.getElementById("overlay").classList.remove("open"); }
+function overlayTap(e) { if(e.target.id==="overlay") closeSheet(); }
+
+function chkDone(ri) {
+  const res=document.getElementById("cr"+ri).value;
+  if(document.getElementById("cd"+ri).checked && !res) {
+    toast("⚠️ Select a call result first");
+    document.getElementById("cd"+ri).checked=false;
+  }
+}
+
+function openWA(phone,name) {
+  if(!phone){toast("No WhatsApp number");return;}
+  const msg=encodeURIComponent(`Hi ${name}, this is a follow-up on your property enquiry. Are you still interested?`);
+  window.open(`https://wa.me/${phone}?text=${msg}`,"_blank");
+}
+
+function openCall(phone) {
+  if(!phone){toast("No phone number");return;}
+  window.location.href="tel:+"+phone;
+}
+
+let toastTimer;
+function toast(msg) {
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove("show"),2800);
+}
+
+// ════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════
+function toDate(v) {
+  if(!v) return "";
+  if(typeof v==="string"&&/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0,10);
+  const d=new Date(v); return isNaN(d)?"":d.toISOString().split("T")[0];
+}
+function fmt(d) {
+  if(!d) return "";
+  return new Date(d+"T00:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+}
+function ini(n){return(n||"?").trim().split(" ").filter(Boolean).map(w=>w[0]).join("").toUpperCase().slice(0,2)||"?";}
+const AVC=["av-g","av-b","av-a","av-r"];
+function col(n){let h=0;for(let i=0;i<(n||"").length;i++)h=(h*31+n.charCodeAt(i))&0xffff;return AVC[h%AVC.length];}
+function e(v){return(v===undefined||v===null)?"":String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function s(v){return(v===undefined||v===null)?"":String(v);}
+</script>
+</body>
+</html>
