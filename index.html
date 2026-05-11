@@ -8,12 +8,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="LeadPilot"/>
 <title>LeadPilot</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#F4F3EF;color:#0D0D0B;-webkit-font-smoothing:antialiased}
-button,input,select{font-family:inherit;border:none;outline:none;background:none;cursor:pointer}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  background:#F4F3EF;color:#0D0D0B;-webkit-font-smoothing:antialiased}
+button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;border:none;outline:none;background:none;cursor:pointer}
 :root{
   --g:#0FA573;--gd:#097A54;--gl:#D6F5E9;
   --r:#E53E2C;--rl:#FDECEA;
@@ -102,7 +102,7 @@ button,input,select{font-family:inherit;border:none;outline:none;background:none
 .ni-ico{font-size:22px;line-height:1}
 
 /* ── card ── */
-.card{background:var(--card);border-radius:16px;border:1.5px solid var(--bd);overflow:hidden}
+.card{background:var(--card);border-radius:16px;border:1.5px solid var(--bd)}
 .card.overdue {border-left:4px solid var(--r)}
 .card.today   {border-left:4px solid var(--a)}
 .card.upcoming{border-left:4px solid var(--g)}
