@@ -17,248 +17,245 @@ html,body{height:100%;overflow:hidden}
   --r:#E53E2C;--rl:#FDECEA;
   --a:#E07B00;--al:#FFF0D6;
   --b:#1A6FD4;--bl:#E3EEFB;
-  --tx:#0D0D0B;--tx2:#5a5a54;
+  --pu:#7C3AED;--pul:#EDE9FE;
+  --tx:#0D0D0B;--tx2:#5a5a54;--tx3:#999994;
   --bg:#F4F3EF;--card:#fff;--bd:#E5E4DF;
   --fn:'Plus Jakarta Sans',sans-serif;
   --st:env(safe-area-inset-top,0px);
   --sb:env(safe-area-inset-bottom,0px);
 }
 body{font-family:var(--fn);background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
-button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointer}
+button,input,select,textarea{font-family:var(--fn);border:none;outline:none;cursor:pointer;background:none}
 
-/* ── APP SHELL ── */
-.app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;overflow:hidden}
+/* ══ APP SHELL ══ */
+.app{
+  display:flex;flex-direction:column;
+  height:100dvh;max-width:480px;margin:0 auto;
+  overflow:hidden;
+  position:fixed;width:100%;left:50%;transform:translateX(-50%);
+}
 
-/* ── TOPBAR ── */
-.topbar{background:var(--g);padding:calc(var(--st) + 12px) 16px 12px;flex-shrink:0}
-.topbar-row{display:flex;align-items:center;justify-content:space-between}
-.tl h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:-.4px;line-height:1}
-.tl p{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;font-weight:500}
+/* ══ TOPBAR ══ */
+.topbar{background:var(--g);padding:calc(var(--st)+12px) 16px 12px;flex-shrink:0;
+  box-shadow:0 2px 12px rgba(0,165,115,.25)}
+.tr{display:flex;align-items:center;justify-content:space-between}
+.tl h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1}
+.tl p{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;font-weight:600}
 .add-btn{background:#fff;color:var(--gd);border-radius:12px;padding:11px 16px;
   font-size:15px;font-weight:800;display:flex;align-items:center;gap:5px;
   box-shadow:0 2px 10px rgba(0,0,0,.12);white-space:nowrap}
-.add-btn:active{opacity:.85}
+.add-btn:active{transform:scale(.95)}
 
-/* ── STATS ── */
+/* ══ STATS ══ */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:12px 12px 0;flex-shrink:0}
 .stat{background:var(--card);border-radius:12px;padding:10px 4px;text-align:center;border:1.5px solid var(--bd)}
 .sn{font-size:26px;font-weight:800;line-height:1}
-.sl{font-size:10px;font-weight:700;color:var(--tx2);margin-top:3px;text-transform:uppercase;letter-spacing:.3px}
+.sl{font-size:10px;font-weight:700;color:var(--tx2);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
 .cr{color:var(--r)}.ca{color:var(--a)}.cg{color:var(--g)}.cb{color:var(--b)}
 
-/* ── SEARCH ── */
+/* ══ SEARCH ══ */
 .sw{padding:10px 12px 0;flex-shrink:0}
-.sb{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:12px;
+.sbox{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:12px;
   padding:12px 14px;border:1.5px solid var(--bd)}
-.sb input{flex:1;font-size:15px;background:transparent;color:var(--tx);font-weight:500}
-.sb input::placeholder{color:#aaa}
+.sbox input{flex:1;font-size:15px;background:transparent;color:var(--tx);font-weight:500}
+.sbox input::placeholder{color:var(--tx3)}
 
-/* ── TABS ── */
+/* ══ TABS ══ */
 .tw{padding:10px 12px 0;flex-shrink:0}
-.tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+.tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex-shrink:0;padding:9px 16px;border-radius:10px;font-size:14px;font-weight:700;
-  background:var(--card);color:var(--tx2);border:1.5px solid var(--bd);white-space:nowrap;cursor:pointer}
+  background:var(--card);color:var(--tx2);border:1.5px solid var(--bd);white-space:nowrap}
 .tab.active{background:var(--tx);color:#fff;border-color:var(--tx)}
 .tbadge{display:inline-block;background:var(--r);color:#fff;border-radius:20px;
   font-size:10px;font-weight:800;padding:1px 6px;margin-left:4px;vertical-align:middle}
 .tab.active .tbadge{background:rgba(255,255,255,.3)}
 
-/* ── LEAD LIST ── */
-.list{flex:1;overflow-y:auto;padding:10px 12px calc(10px + var(--sb));
-  display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+/* ══ LIST ══ */
+.list{
+  flex:1;
+  overflow-y:scroll;
+  -webkit-overflow-scrolling:touch;
+  padding:10px 12px calc(80px + var(--sb));
+  display:flex;flex-direction:column;gap:10px;
+  min-height:0; /* critical — makes flex child scroll */
+}
 .list::-webkit-scrollbar{display:none}
 
-/* ══════════════════════════════════════════
+/* ══════════════════════════════════════
    LEAD CARD
-   Always shows: info + WhatsApp + Call + Update button
-   No inline expansion — update opens as modal
-══════════════════════════════════════════ */
+   Always shows: name + info + WA + Call + Update button
+   No collapse/expand in the list
+══════════════════════════════════════ */
 .card{background:var(--card);border-radius:18px;border:1.5px solid var(--bd);overflow:hidden}
-.card.overdue{border-left:4px solid var(--r)}
-.card.today{border-left:4px solid var(--a)}
-.card.upcoming{border-left:4px solid var(--g)}
+.card.overdue{border-left:5px solid var(--r)}
+.card.today  {border-left:5px solid var(--a)}
+.card.upcoming{border-left:5px solid var(--g)}
+.card.done-card{border-left:5px solid #aaa;opacity:.75}
 
-/* Top: avatar + info + badge */
-.ch{padding:14px 14px 0;display:flex;align-items:center;gap:12px}
-.av{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;
-  justify-content:center;font-size:16px;font-weight:800;flex-shrink:0}
+/* Card header */
+.ch{padding:14px 14px 10px;display:flex;align-items:flex-start;gap:11px}
+.av{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:17px;font-weight:800;flex-shrink:0}
 .av-g{background:var(--gl);color:var(--gd)}
 .av-b{background:var(--bl);color:var(--b)}
 .av-a{background:var(--al);color:var(--a)}
 .av-r{background:var(--rl);color:var(--r)}
+.av-p{background:var(--pul);color:var(--pu)}
+
 .ci{flex:1;min-width:0}
-.cn{font-size:18px;font-weight:800;color:var(--tx);line-height:1.1}
+.cn{font-size:18px;font-weight:800;color:var(--tx);line-height:1.15}
 .cm{font-size:13px;color:var(--tx2);font-weight:600;margin-top:3px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cd{font-size:13px;color:var(--tx2);margin-top:2px;font-weight:500;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.badge{font-size:11px;font-weight:800;padding:5px 9px;border-radius:10px;white-space:nowrap;flex-shrink:0;align-self:flex-start}
-.br{background:var(--rl);color:var(--r)}
-.ba{background:var(--al);color:var(--a)}
-.bg2{background:var(--gl);color:var(--gd)}
-.bb{background:var(--bl);color:var(--b)}
+.cd{font-size:13px;color:var(--tx3);margin-top:3px;font-weight:500}
 
-/* WhatsApp + Call — always visible, big */
-.cbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px 8px}
-.cbtn{padding:14px 8px;border-radius:12px;font-size:16px;font-weight:800;
+.bdg{font-size:11px;font-weight:800;padding:5px 9px;border-radius:10px;
+  white-space:nowrap;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.bdg-r{background:var(--rl);color:var(--r)}
+.bdg-a{background:var(--al);color:var(--a)}
+.bdg-g{background:var(--gl);color:var(--gd)}
+.bdg-b{background:var(--bl);color:var(--b)}
+.bdg-gr{background:#F0F0EE;color:#666}
+
+/* WA + Call buttons — always visible */
+.cbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px 10px}
+.cbtn{padding:15px 8px;border-radius:12px;font-size:16px;font-weight:800;
   display:flex;align-items:center;justify-content:center;gap:7px;border:none}
-.cbtn:active{opacity:.7}
+.cbtn:active{opacity:.7;transform:scale(.97)}
 .wa{background:var(--gl);color:var(--gd)}
 .cl{background:var(--bl);color:var(--b)}
-.cbtn-icon{font-size:18px}
 
-/* Update button — green bar, full width, can't miss it */
-.upd-bar{
-  display:block;width:calc(100% - 24px);margin:0 12px 14px;
-  background:var(--g);color:#fff;border-radius:12px;padding:15px;
-  font-size:16px;font-weight:800;border:none;
+/* Update After Call button — full width, green, always at bottom of card */
+.upd-btn{
+  width:calc(100% - 24px);margin:0 12px 12px;
+  background:var(--g);color:#fff;border-radius:12px;
+  padding:14px;font-size:16px;font-weight:800;
   display:flex;align-items:center;justify-content:center;gap:8px;
+  border:none;
 }
-.upd-bar:active{background:var(--gd)}
+.upd-btn:active{background:var(--gd)}
 
-/* ── EMPTY / LOADING ── */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:60px 24px;text-align:center;gap:10px}
-.ei{font-size:56px;opacity:.25}
-.et{font-size:20px;font-weight:800;color:var(--tx)}
-.es{font-size:15px;color:var(--tx2);line-height:1.5;max-width:260px;font-weight:500}
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:14px;color:var(--tx2)}
-.spin{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-
-/* ══════════════════════════════════════════
-   UPDATE MODAL — full screen, fully scrollable
-══════════════════════════════════════════ */
-.modal-bg{
-  position:fixed;inset:0;z-index:400;
-  background:rgba(0,0,0,.6);
-  display:flex;align-items:flex-end;
-  opacity:0;pointer-events:none;
-  transition:opacity .2s;
+/* ══════════════════════════════════════
+   UPDATE MODAL — full screen overlay
+   Opens when agent taps "Update After Call"
+   Scrollable independently — no card interference
+══════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:400;display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .22s;
 }
-.modal-bg.open{opacity:1;pointer-events:all}
+.modal-overlay.open{opacity:1;pointer-events:all}
 
 .modal{
-  background:#fff;
-  border-radius:22px 22px 0 0;
-  width:100%;
-  /* Takes up to 92% of screen height, always scrollable inside */
-  max-height:92dvh;
-  display:flex;
-  flex-direction:column;
-  transform:translateY(100%);
-  transition:transform .28s cubic-bezier(.32,.72,0,1);
+  background:#fff;border-radius:24px 24px 0 0;
+  width:100%;height:88dvh; /* fixed tall height — always scrollable */
+  display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);
 }
-.modal-bg.open .modal{transform:translateY(0)}
+.modal-overlay.open .modal{transform:translateY(0)}
 
-/* Handle */
-.modal-handle-w{padding:14px 0 0;display:flex;justify-content:center;flex-shrink:0}
-.modal-handle{width:38px;height:5px;background:#DDD;border-radius:3px}
-
-/* Header — fixed at top of modal */
-.modal-hdr{
-  padding:12px 18px 14px;
-  border-bottom:1.5px solid var(--bd);
+/* Modal top bar — fixed, doesn't scroll */
+.modal-top{
+  padding:16px 18px 12px;border-bottom:1.5px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
 }
-.modal-name{font-size:20px;font-weight:800;color:var(--tx)}
-.modal-sub{font-size:13px;color:var(--tx2);font-weight:600;margin-top:2px}
-.modal-close-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.modal-close{background:var(--bg);border:1.5px solid var(--bd);border-radius:10px;
-  padding:8px 14px;font-size:14px;font-weight:700;color:var(--tx2)}
+.modal-name{font-size:18px;font-weight:800;color:var(--tx)}
+.modal-sub{font-size:13px;color:var(--tx2);font-weight:500;margin-top:2px}
+.modal-close{background:var(--bg);border-radius:10px;padding:8px 14px;
+  font-size:14px;font-weight:700;color:var(--tx2);border:1.5px solid var(--bd)}
 .modal-close:active{opacity:.7}
 
-/* Scrollable body */
+/* Modal body — scrolls freely */
 .modal-body{
-  flex:1;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  padding:18px 18px calc(20px + var(--sb));
-  display:flex;
-  flex-direction:column;
-  gap:14px;
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:16px 18px calc(20px + var(--sb));
+  display:flex;flex-direction:column;gap:14px;
 }
 .modal-body::-webkit-scrollbar{display:none}
 
-/* Section label */
-.sec-lbl{font-size:12px;font-weight:800;color:var(--tx2);
-  text-transform:uppercase;letter-spacing:.6px;
-  padding-bottom:4px;border-bottom:1px solid var(--bd)}
-
-/* Field */
-.fld{display:flex;flex-direction:column;gap:6px}
-.fld label{font-size:15px;font-weight:700;color:var(--tx)}
-.fld input,.fld select{
+.mfld{display:flex;flex-direction:column;gap:6px}
+.mfld label{font-size:15px;font-weight:700;color:var(--tx)}
+.mfld input,.mfld select{
   width:100%;padding:15px 14px;border-radius:12px;
-  border:1.5px solid var(--bd);background:#FAFAF8;
+  border:1.5px solid var(--bd);background:var(--bg);
   font-size:16px;font-weight:500;color:var(--tx);
   -webkit-appearance:none;appearance:none;
 }
-.fld select{
+.mfld select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 14px center;
-  background-color:#FAFAF8;
-  padding-right:42px;
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;
 }
-.fld input:focus,.fld select:focus{border-color:var(--g);background:#fff;}
+.mfld input:focus,.mfld select:focus{border-color:var(--g);background:#fff;outline:none}
 
-/* Done checkbox row */
+.sec-hd{font-size:12px;font-weight:800;color:var(--tx3);
+  text-transform:uppercase;letter-spacing:.6px;padding-top:4px}
+
 .done-row{
   display:flex;align-items:center;gap:14px;
-  background:#fff;border-radius:12px;
-  padding:16px 14px;border:2px solid var(--bd);
+  background:var(--gl);border-radius:14px;
+  padding:18px 16px;border:2px solid rgba(15,165,115,.3);
 }
-.done-row.checked{border-color:var(--g);background:var(--gl)}
 .done-row input[type=checkbox]{width:28px;height:28px;accent-color:var(--g);cursor:pointer;flex-shrink:0}
-.done-row label{font-size:17px;font-weight:800;color:var(--tx);cursor:pointer}
+.done-row label{font-size:17px;font-weight:800;color:var(--gd);cursor:pointer;line-height:1.2}
 
-/* Save button */
-.sv-btn{
-  width:100%;background:var(--g);color:#fff;
-  border-radius:14px;padding:18px;
-  font-size:18px;font-weight:800;border:none;
+/* Save button — sticks inside scroll so always reachable */
+.modal-save{
+  width:100%;background:var(--tx);color:#fff;border-radius:14px;
+  padding:18px;font-size:18px;font-weight:800;border:none;
   margin-top:4px;
 }
-.sv-btn:active{background:var(--gd)}
-.sv-btn:disabled{opacity:.4}
-.sv-ok{text-align:center;color:var(--g);font-size:15px;font-weight:800;padding:4px 0;display:none}
+.modal-save:active{opacity:.85}
+.modal-save:disabled{opacity:.4}
+.modal-saved{text-align:center;color:var(--g);font-size:15px;font-weight:800;padding:4px}
 
-/* ── ADD LEAD SHEET ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;
-  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
-.overlay.open{opacity:1;pointer-events:all}
-.sheet{background:#fff;border-radius:22px 22px 0 0;width:100%;
+/* ══ ADD LEAD SHEET ══ */
+.aoverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;
+  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .22s}
+.aoverlay.open{opacity:1;pointer-events:all}
+.asheet{background:#fff;border-radius:22px 22px 0 0;width:100%;
   max-height:93dvh;overflow-y:auto;
   padding:0 0 calc(20px + var(--sb));
-  transform:translateY(100%);transition:transform .27s cubic-bezier(.32,.72,0,1)}
-.overlay.open .sheet{transform:translateY(0)}
-.sh-handle-w{padding:14px 0 6px;display:flex;justify-content:center}
-.sh-handle{width:38px;height:5px;background:#DDD;border-radius:3px}
-.sh-ttl{font-size:22px;font-weight:800;padding:0 18px 14px}
-.sh-body{padding:0 18px;display:flex;flex-direction:column;gap:12px}
-.sh-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.sh-fld{display:flex;flex-direction:column;gap:5px}
-.sh-fld label{font-size:14px;font-weight:700;color:var(--tx)}
-.sh-fld input,.sh-fld select{
+  transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}
+.aoverlay.open .asheet{transform:translateY(0)}
+.ash-handle-w{padding:14px 0 6px;display:flex;justify-content:center}
+.ash-handle{width:38px;height:5px;background:#DDD;border-radius:3px}
+.ash-ttl{font-size:22px;font-weight:800;padding:0 18px 14px;color:var(--tx)}
+.ash-body{padding:0 18px;display:flex;flex-direction:column;gap:12px}
+.ash-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.afld{display:flex;flex-direction:column;gap:5px}
+.afld label{font-size:14px;font-weight:700;color:var(--tx)}
+.afld input,.afld select{
   width:100%;padding:14px 12px;border-radius:11px;
   border:1.5px solid var(--bd);background:var(--bg);
   font-size:15px;font-weight:500;color:var(--tx);
   -webkit-appearance:none;appearance:none;
 }
-.sh-fld select{
+.afld select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;
-  background-color:var(--bg);padding-right:36px;
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;
 }
-.sh-fld input:focus,.sh-fld select:focus{border-color:var(--g);background:#fff;}
-.sh-submit{margin:16px 18px 0;width:calc(100% - 36px);background:var(--g);color:#fff;
+.afld input:focus,.afld select:focus{border-color:var(--g);background:#fff;outline:none}
+.ash-submit{margin:16px 18px 0;width:calc(100% - 36px);background:var(--g);color:#fff;
   border-radius:12px;padding:18px;font-size:18px;font-weight:800;border:none}
-.sh-submit:active{background:var(--gd)}
-.sh-cancel{margin:10px 18px 0;width:calc(100% - 36px);background:var(--bg);color:var(--tx2);
+.ash-submit:active{background:var(--gd)}
+.ash-cancel{margin:10px 18px 0;width:calc(100% - 36px);background:var(--bg);color:var(--tx2);
   border-radius:12px;padding:14px;font-size:15px;font-weight:700;border:1.5px solid var(--bd)}
 
-/* ── BOTTOM NAV ── */
+/* ══ EMPTY / LOADING ══ */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 24px;text-align:center;gap:10px}
+.ei{font-size:56px;opacity:.25}.et{font-size:20px;font-weight:800}
+.es{font-size:15px;color:var(--tx2);line-height:1.5;max-width:260px;font-weight:500}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 24px;gap:14px;color:var(--tx2)}
+.spin{width:34px;height:34px;border:3px solid var(--bd);
+  border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ══ BOTTOM NAV ══ */
 .bnav{display:flex;background:#fff;border-top:1.5px solid var(--bd);
   padding:6px 0 calc(6px + var(--sb));flex-shrink:0}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
@@ -267,13 +264,13 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
 .ni.active{color:var(--g)}
 .ni-ico{font-size:24px;line-height:1}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:calc(88px + var(--sb));left:50%;
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:calc(90px + var(--sb));left:50%;
   transform:translateX(-50%) translateY(20px);
-  background:#111;color:#fff;padding:12px 22px;border-radius:50px;
-  font-size:14px;font-weight:700;z-index:600;opacity:0;
-  transition:all .2s;pointer-events:none;white-space:nowrap;
-  box-shadow:0 4px 20px rgba(0,0,0,.25)}
+  background:#111;color:#fff;padding:12px 22px;
+  border-radius:50px;font-size:14px;font-weight:700;
+  z-index:600;opacity:0;transition:all .2s;pointer-events:none;
+  white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -282,12 +279,12 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-row">
+    <div class="tr">
       <div class="tl">
         <h1>LeadPilot</h1>
         <p id="top-date"></p>
       </div>
-      <button class="add-btn" onclick="openSheet()">＋ Add Lead</button>
+      <button class="add-btn" onclick="openAddSheet()">＋ Add Lead</button>
     </div>
   </div>
 
@@ -301,7 +298,7 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
 
   <!-- SEARCH -->
   <div class="sw">
-    <div class="sb">
+    <div class="sbox">
       <span style="font-size:18px">🔍</span>
       <input id="search" placeholder="Search name, phone, interest…" oninput="renderList()"/>
     </div>
@@ -310,11 +307,12 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
   <!-- TABS -->
   <div class="tw">
     <div class="tabs">
-      <div class="tab active" data-tab="today" onclick="switchTab(this)">Today <span class="tbadge" id="tb-t">0</span></div>
-      <div class="tab" data-tab="overdue" onclick="switchTab(this)">Overdue <span class="tbadge" id="tb-o">0</span></div>
-      <div class="tab" data-tab="all" onclick="switchTab(this)">All Leads</div>
-      <div class="tab" data-tab="upcoming" onclick="switchTab(this)">Upcoming</div>
-      <div class="tab" data-tab="done" onclick="switchTab(this)">Done</div>
+      <div class="tab active" data-tab="today"    onclick="switchTab(this)">Today    <span class="tbadge" id="tb-t">0</span></div>
+      <div class="tab"        data-tab="new"      onclick="switchTab(this)">New 🔵   <span class="tbadge" id="tb-n">0</span></div>
+      <div class="tab"        data-tab="overdue"  onclick="switchTab(this)">Overdue  <span class="tbadge" id="tb-o">0</span></div>
+      <div class="tab"        data-tab="all"      onclick="switchTab(this)">All Leads</div>
+      <div class="tab"        data-tab="upcoming" onclick="switchTab(this)">Upcoming</div>
+      <div class="tab"        data-tab="done"     onclick="switchTab(this)">Done</div>
     </div>
   </div>
 
@@ -323,41 +321,39 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
 
   <!-- BOTTOM NAV -->
   <div class="bnav">
-    <div class="ni active" onclick="switchTabKey('today')"><div class="ni-ico">📋</div>Today</div>
-    <div class="ni" onclick="switchTabKey('all')"><div class="ni-ico">👥</div>All</div>
-    <div class="ni" onclick="openSheet()"><div class="ni-ico">➕</div>Add</div>
-    <div class="ni" onclick="loadLeads()"><div class="ni-ico">🔄</div>Refresh</div>
-    <div class="ni" onclick="switchTabKey('done')"><div class="ni-ico">✅</div>Done</div>
+    <div class="ni active" onclick="switchTabKey('today')">  <div class="ni-ico">📋</div>Today</div>
+    <div class="ni"        onclick="switchTabKey('all')">    <div class="ni-ico">👥</div>All</div>
+    <div class="ni"        onclick="openAddSheet()">         <div class="ni-ico">➕</div>Add</div>
+    <div class="ni"        onclick="loadLeads()">            <div class="ni-ico">🔄</div>Refresh</div>
+    <div class="ni"        onclick="switchTabKey('done')">   <div class="ni-ico">✅</div>Done</div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     UPDATE MODAL — full screen popup, scrollable
-════════════════════════════════════════════ -->
-<div class="modal-bg" id="modal-bg" onclick="modalBgTap(event)">
+<!-- ══════════════════════════════════════
+     UPDATE MODAL — full screen, scrollable
+     Opens when agent taps "Update After Call"
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="modalOverlayTap(event)">
   <div class="modal" id="modal">
-    <div class="modal-handle-w"><div class="modal-handle"></div></div>
 
-    <!-- Header — always visible at top -->
-    <div class="modal-hdr">
-      <div class="modal-close-row">
-        <div>
-          <div class="modal-name" id="modal-name">Update Lead</div>
-          <div class="modal-sub" id="modal-sub"></div>
-        </div>
-        <button class="modal-close" onclick="closeModal()">✕ Close</button>
+    <!-- Fixed header -->
+    <div class="modal-top">
+      <div>
+        <div class="modal-name" id="modal-name">Update Lead</div>
+        <div class="modal-sub"  id="modal-sub"></div>
       </div>
+      <button class="modal-close" onclick="closeModal()">✕ Close</button>
     </div>
 
-    <!-- Scrollable body with all fields -->
-    <div class="modal-body" id="modal-body">
+    <!-- Scrollable body -->
+    <div class="modal-body">
 
-      <div class="sec-lbl">📋 Call Update</div>
+      <div class="sec-hd">📞 After call update</div>
 
-      <div class="fld">
+      <div class="mfld">
         <label>Lead Status</label>
         <select id="m-status">
-          <option value="">Select…</option>
+          <option value="">Select status…</option>
           <option>New</option><option>Interested</option>
           <option>Site Visit Scheduled</option><option>Site Visit Done</option>
           <option>Negotiation</option><option>Converted</option>
@@ -365,10 +361,10 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
         </select>
       </div>
 
-      <div class="fld">
-        <label>Call Result *</label>
+      <div class="mfld">
+        <label>Call Result ★ Required</label>
         <select id="m-result">
-          <option value="">Select…</option>
+          <option value="">Select result…</option>
           <option>Interested</option><option>Not Interested</option>
           <option>Call Back Later</option><option>No Answer</option>
           <option>Wrong Number</option><option>Site Visit Booked</option>
@@ -376,92 +372,92 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
         </select>
       </div>
 
-      <div class="fld">
+      <div class="mfld">
         <label>Next Follow-up Date</label>
-        <input type="date" id="m-followdate"/>
+        <input type="date" id="m-date"/>
       </div>
 
-      <div class="sec-lbl">📌 Lead Details</div>
-
-      <div class="fld">
+      <div class="mfld">
         <label>Priority</label>
         <select id="m-priority">
-          <option value="">Select…</option>
+          <option value="">Select priority…</option>
           <option>🔥 Hot</option><option>♨️ Warm</option><option>❄️ Cold</option>
         </select>
       </div>
 
-      <div class="fld">
+      <div class="sec-hd">💰 Deal details</div>
+
+      <div class="mfld">
         <label>Property Value (₹)</label>
-        <input type="text" id="m-propvalue" placeholder="e.g. 75,00,000"/>
+        <input type="text" id="m-propval" placeholder="e.g. 75,00,000"/>
       </div>
 
-      <div class="fld">
+      <div class="mfld">
         <label>Commission %</label>
-        <input type="text" id="m-commission" placeholder="e.g. 2"/>
+        <input type="text" id="m-comm" placeholder="e.g. 2"/>
       </div>
 
-      <div class="fld">
-        <label>Remarks / Notes</label>
-        <input type="text" id="m-remarks" placeholder="Any notes about this lead…"/>
+      <div class="mfld">
+        <label>Agent Name</label>
+        <input type="text" id="m-agent" placeholder="Your name"/>
       </div>
 
-      <div class="sec-lbl">✅ Mark Complete</div>
+      <div class="sec-hd">✅ Mark complete</div>
 
-      <!-- Big checkbox, green when checked -->
-      <div class="done-row" id="m-done-row" onclick="toggleDone()">
-        <input type="checkbox" id="m-calldone" onclick="event.stopPropagation();toggleDone()"/>
-        <label for="m-calldone">✅ Mark Call as Done</label>
+      <!-- Big green done checkbox — always visible when you scroll down -->
+      <div class="done-row">
+        <input type="checkbox" id="m-done"/>
+        <label for="m-done">Call Done — tick after selecting result above</label>
       </div>
 
-      <button class="sv-btn" id="m-save-btn" onclick="saveModal()">
+      <button class="modal-save" id="modal-save-btn" onclick="saveFromModal()">
         💾 Save Update
       </button>
-      <div class="sv-ok" id="m-save-ok">✓ Saved successfully!</div>
+      <div class="modal-saved" id="modal-saved" style="display:none">✓ Saved successfully!</div>
 
-    </div>
-  </div>
+    </div><!-- end modal-body -->
+  </div><!-- end modal -->
 </div>
 
-<!-- ADD LEAD BOTTOM SHEET -->
-<div class="overlay" id="overlay" onclick="oTap(event)">
-  <div class="sheet">
-    <div class="sh-handle-w"><div class="sh-handle"></div></div>
-    <div class="sh-ttl">Add New Lead</div>
-    <div class="sh-body">
+<!-- ADD LEAD SHEET -->
+<div class="aoverlay" id="aoverlay" onclick="aOverlayTap(event)">
+  <div class="asheet">
+    <div class="ash-handle-w"><div class="ash-handle"></div></div>
+    <div class="ash-ttl">Add New Lead</div>
+    <div class="ash-body">
 
-      <div class="sh-fld"><label>Full Name *</label>
+      <div class="afld"><label>Full Name ★</label>
         <input id="fn" placeholder="Client full name"/></div>
 
-      <div class="sh-row">
-        <div class="sh-fld"><label>Phone *</label>
+      <div class="ash-row">
+        <div class="afld"><label>Phone ★</label>
           <input id="fp" type="tel" placeholder="+91 98765 43210"/></div>
-        <div class="sh-fld"><label>WhatsApp</label>
+        <div class="afld"><label>WhatsApp</label>
           <input id="fw" type="tel" placeholder="If different"/></div>
       </div>
 
-      <div class="sh-fld"><label>Email</label>
+      <div class="afld"><label>Email</label>
         <input id="fe" type="email" placeholder="client@email.com"/></div>
 
-      <div class="sh-fld"><label>Interested In</label>
+      <div class="afld"><label>Interested In</label>
         <select id="fi">
           <option value="">Select…</option>
           <option>2BHK Apartment</option><option>3BHK Apartment</option>
-          <option>Villa</option><option>Plot</option>
-          <option>Commercial</option><option>Office Space</option>
-          <option>Shop</option><option>Other</option>
+          <option>4BHK Apartment</option><option>Villa</option>
+          <option>Plot</option><option>Commercial</option>
+          <option>Office Space</option><option>Shop</option><option>Other</option>
         </select></div>
 
-      <div class="sh-row">
-        <div class="sh-fld"><label>Budget</label>
+      <div class="ash-row">
+        <div class="afld"><label>Budget</label>
           <select id="fb">
             <option value="">Budget…</option>
-            <option>Below ₹20 Lakhs</option><option>₹20–₹40 Lakhs</option>
-            <option>₹40–₹60 Lakhs</option><option>₹60–₹80 Lakhs</option>
-            <option>₹80L–₹1 Cr</option><option>₹1–₹1.5 Cr</option>
-            <option>Above ₹1.5 Cr</option>
+            <option>Below ₹20L</option><option>₹20–40L</option>
+            <option>₹40–60L</option><option>₹60–80L</option>
+            <option>₹80L–1Cr</option><option>₹1–1.5Cr</option>
+            <option>Above ₹1.5Cr</option>
           </select></div>
-        <div class="sh-fld"><label>Lead Source</label>
+        <div class="afld"><label>Lead Source</label>
           <select id="fs">
             <option value="">Source…</option>
             <option>Facebook Ad</option><option>Instagram Ad</option>
@@ -470,18 +466,18 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
           </select></div>
       </div>
 
-      <div class="sh-fld"><label>Project</label>
+      <div class="afld"><label>Project</label>
         <input id="fpr" placeholder="Project name"/></div>
-      <div class="sh-fld"><label>Preferred Location</label>
+      <div class="afld"><label>Preferred Location</label>
         <input id="fl" placeholder="Area / locality"/></div>
-      <div class="sh-fld"><label>Follow-up Date</label>
+      <div class="afld"><label>Follow-up Date</label>
         <input id="fd" type="date"/></div>
-      <div class="sh-fld"><label>Agent Name</label>
+      <div class="afld"><label>Agent Name</label>
         <input id="fan" placeholder="Your name"/></div>
 
     </div>
-    <button class="sh-submit" onclick="submitLead()">💾 Save Lead</button>
-    <button class="sh-cancel" onclick="closeSheet()">Cancel</button>
+    <button class="ash-submit" onclick="submitLead()">💾 Save Lead</button>
+    <button class="ash-cancel" onclick="closeAddSheet()">Cancel</button>
   </div>
 </div>
 
@@ -489,143 +485,162 @@ button,input,select{font-family:var(--fn);border:none;outline:none;cursor:pointe
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 // ⚙️  PASTE YOUR WEB APP URL HERE
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 const API = "https://script.google.com/macros/s/AKfycbwS23IxbiO_uMdXtM-pNtsHPjnH0U8v0dnbIkCivqtFdwIT7_Kv2v-zKYkXeCOn3NfSmg/exec";
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 // STATE
-// ══════════════════════════════════════════
-let leads = [], curTab = "today", modalRowIndex = null;
+// ════════════════════════════════════════
+let leads = [], curTab = "today", activeRowIndex = null;
 const TODAY = new Date().toISOString().split("T")[0];
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
   const d = new Date();
   document.getElementById("top-date").textContent =
-    d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
+    d.toLocaleDateString("en-IN", {weekday:"long", day:"numeric", month:"long"});
   document.getElementById("fd").value = TODAY;
-  document.getElementById("m-followdate").value = TODAY;
+  document.getElementById("m-date").value = TODAY;
   loadLeads();
 });
 
-// ══════════════════════════════════════════
-// LOAD LEADS
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
+// LOAD LEADS FROM SHEET API
+// ════════════════════════════════════════
 async function loadLeads() {
   showLoad();
   try {
-    const r = await fetch(API + (API.includes("?") ? "&" : "?") + "action=getLeads&t=" + Date.now(), { redirect: "follow" });
-    leads = (await r.json()).map(norm);
+    const url = API + (API.includes("?")?"&":"?") + "action=getLeads&t=" + Date.now();
+    const res = await fetch(url, {redirect:"follow"});
+    leads = (await res.json()).map(norm);
     renderList();
-  } catch (err) {
+  } catch(err) {
     document.getElementById("lead-list").innerHTML = `
       <div class="empty">
         <div class="ei">⚠️</div>
         <div class="et">Cannot load leads</div>
-        <div class="es">Check your API URL in the HTML file.<br/>${err.message}</div>
+        <div class="es">Check your API URL.<br/>${err.message}</div>
       </div>`;
   }
 }
 
 function norm(r) {
-  const fd = tds(r.followDate);
+  const fd  = tds(r.followDate);
   let st = "new";
-  if (fd) { if (fd < TODAY) st = "overdue"; else if (fd === TODAY) st = "today"; else st = "upcoming"; }
+  if (fd) {
+    if (fd < TODAY) st = "overdue";
+    else if (fd === TODAY) st = "today";
+    else st = "upcoming";
+  }
   const done = r.callDone === true || String(r.callDone).toLowerCase() === "true";
-  const res = xs(r.callResult);
+  const res  = xs(r.callResult);
   const isDone = done && res.trim() !== "";
-  const ph = xs(r.phone).replace(/\D/g, "");
-  const wa = xs(r.whatsapp).replace(/\D/g, "") || ph;
+  const ph = xs(r.phone).replace(/\D/g,"");
+  const wa = xs(r.whatsapp).replace(/\D/g,"") || ph;
   return {
-    rowIndex: r.rowIndex, name: xs(r.name) || "—", phone: ph, whatsapp: wa,
-    email: xs(r.email), interest: xs(r.interest), budget: xs(r.budget),
-    project: xs(r.project), source: xs(r.source), location: xs(r.location),
-    remarks: xs(r.remarks), leadStatus: xs(r.leadStatus), followDate: fd,
-    callDone: done, callResult: res, propValue: xs(r.propValue),
-    commission: xs(r.commission), priority: xs(r.priority), agentName: xs(r.agentName),
-    status: st, isDone, initials: ini(xs(r.name)), color: avc(xs(r.name))
+    rowIndex:r.rowIndex, name:xs(r.name)||"—",
+    phone:ph, whatsapp:wa, email:xs(r.email),
+    interest:xs(r.interest), budget:xs(r.budget),
+    project:xs(r.project), source:xs(r.source),
+    location:xs(r.location), remarks:xs(r.remarks),
+    leadStatus:xs(r.leadStatus), followDate:fd,
+    callDone:done, callResult:res,
+    propValue:xs(r.propValue), commission:xs(r.commission),
+    priority:xs(r.priority), agentName:xs(r.agentName),
+    status:st, isDone,
+    initials:ini(xs(r.name)), color:avc(xs(r.name)),
   };
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 // RENDER LIST
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 function renderList() {
   updateStats();
   const q = (document.getElementById("search").value || "").toLowerCase();
   const fl = filt(curTab).filter(l =>
     !q || l.name.toLowerCase().includes(q) || l.phone.includes(q) ||
-    l.interest.toLowerCase().includes(q) || l.location.toLowerCase().includes(q));
+    l.interest.toLowerCase().includes(q) || l.location.toLowerCase().includes(q)
+  );
   const el = document.getElementById("lead-list");
   el.innerHTML = fl.length ? fl.map(cardHTML).join("") : emptyHTML();
 }
 
 function filt(t) {
-  if (t === "today")    return leads.filter(l => (l.status === "today" || l.status === "overdue") && !l.isDone);
-  if (t === "overdue")  return leads.filter(l => l.status === "overdue" && !l.isDone);
-  if (t === "upcoming") return leads.filter(l => l.status === "upcoming" && !l.isDone);
-  if (t === "done")     return leads.filter(l => l.isDone);
-  return leads;
+  // TODAY tab = today + overdue + NEW LEADS (no follow-up date yet, not done)
+  // This is the most important fix — new leads from form must be visible here
+  if (t==="today")    return leads.filter(l =>
+    (l.status==="today" || l.status==="overdue" || l.status==="new") && !l.isDone);
+  if (t==="new")      return leads.filter(l => l.status==="new" && !l.isDone);
+  if (t==="overdue")  return leads.filter(l => l.status==="overdue" && !l.isDone);
+  if (t==="upcoming") return leads.filter(l => l.status==="upcoming" && !l.isDone);
+  if (t==="done")     return leads.filter(l => l.isDone);
+  return leads; // all
 }
 
 function updateStats() {
-  const ov = leads.filter(l => l.status === "overdue" && !l.isDone).length;
-  const td = leads.filter(l => l.status === "today" && !l.isDone).length;
-  const up = leads.filter(l => l.status === "upcoming" && !l.isDone).length;
+  const ov  = leads.filter(l=>l.status==="overdue"&&!l.isDone).length;
+  const td  = leads.filter(l=>l.status==="today"&&!l.isDone).length;
+  const nw  = leads.filter(l=>l.status==="new"&&!l.isDone).length;
+  const up  = leads.filter(l=>l.status==="upcoming"&&!l.isDone).length;
   document.getElementById("s-ov").textContent = ov;
-  document.getElementById("s-td").textContent = td;
+  document.getElementById("s-td").textContent = td + nw; // today = today + new
   document.getElementById("s-up").textContent = up;
   document.getElementById("s-al").textContent = leads.length;
-  document.getElementById("tb-t").textContent = td + ov;
+  document.getElementById("tb-t").textContent = td + ov + nw;
   document.getElementById("tb-o").textContent = ov;
+  document.getElementById("tb-n").textContent = nw;
 }
 
-// ══════════════════════════════════════════
-// CARD HTML — compact, all buttons always visible
-// Update opens as MODAL, not inline
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
+// CARD HTML
+// Every card always shows: name, info, WA, Call, Update button
+// No expand/collapse in list — clean and compact
+// ════════════════════════════════════════
 function cardHTML(l) {
-  const ph = l.phone ? "+" + l.phone : "—";
-  const wa = l.whatsapp || l.phone;
-  const fd = l.followDate ? fmtD(l.followDate) : "Not set";
-  const bMap = {
-    overdue: ["br", "🔴 Overdue"],
-    today:   ["ba", "🟡 Today"],
-    upcoming: ["bg2", "🟢 Soon"],
-    new:     ["bb", "🔵 New"]
-  };
-  const [bCls, bTxt] = l.isDone ? ["bg2", "✓ Done"] : (bMap[l.status] || bMap.new);
+  const ph  = l.phone ? "+" + l.phone : "—";
+  const fd  = l.followDate ? fmtD(l.followDate) : "No date set";
   const sub = [l.interest, l.budget].filter(Boolean).join("  ·  ") || "No details";
 
+  const bdg = l.isDone
+    ? `<span class="bdg bdg-gr">✓ Done</span>`
+    : l.status==="overdue"  ? `<span class="bdg bdg-r">🔴 Overdue</span>`
+    : l.status==="today"    ? `<span class="bdg bdg-a">🟡 Today</span>`
+    : l.status==="upcoming" ? `<span class="bdg bdg-g">🟢 Soon</span>`
+    : `<span class="bdg bdg-b">🔵 New</span>`;
+
+  const cardCls = l.isDone ? "card done-card" : `card ${l.status}`;
+  const wa = l.whatsapp || l.phone;
+
   return `
-<div class="card ${l.isDone ? "" : l.status}" id="c${l.rowIndex}">
+<div class="${cardCls}">
   <!-- Name + info -->
   <div class="ch">
-    <div class="av ${l.color}">${xe(l.initials)}</div>
+    <div class="av ${l.color}">${l.initials}</div>
     <div class="ci">
       <div class="cn">${xe(l.name)}</div>
       <div class="cm">${xe(sub)}</div>
       <div class="cd">${ph} &nbsp;·&nbsp; 📅 ${fd}</div>
     </div>
-    <span class="badge ${bCls}">${bTxt}</span>
+    ${bdg}
   </div>
 
-  <!-- WhatsApp + Call — always visible -->
+  <!-- WhatsApp + Call — always visible, big -->
   <div class="cbtns">
     <button class="cbtn wa" onclick="openWA('${wa}','${xe(l.name)}')">
-      <span class="cbtn-icon">📲</span> WhatsApp
+      📲 WhatsApp
     </button>
     <button class="cbtn cl" onclick="openCall('${l.phone}')">
-      <span class="cbtn-icon">📞</span> Call
+      📞 Call
     </button>
   </div>
 
-  <!-- Update button — opens MODAL -->
-  <button class="upd-bar" onclick="openModal(${l.rowIndex})">
+  <!-- Update After Call — opens full screen modal -->
+  <button class="upd-btn" onclick="openModal(${l.rowIndex})">
     ✏️ Update After Call
   </button>
 </div>`;
@@ -633,12 +648,13 @@ function cardHTML(l) {
 
 function emptyHTML() {
   const m = {
-    today:    ["✅", "All clear!", "No follow-ups due today."],
-    overdue:  ["🎉", "No overdue!", "Everything is on track."],
-    upcoming: ["📅", "No upcoming", "Schedule follow-ups to see them here."],
-    done:     ["📁", "No done yet", "Mark calls done after calling."],
-    all:      ["👥", "No leads yet", "Tap + Add Lead to get started."],
-  }[curTab] || ["👥", "", ""];
+    today:   ["📋","Nothing urgent today","New leads, overdue and today's follow-ups appear here."],
+    new:     ["🔵","No new leads","Fresh leads from the form will appear here first."],
+    overdue: ["🎉","No overdue leads!","Everything on track."],
+    upcoming:["📅","No upcoming leads","Set follow-up dates to see leads here."],
+    done:    ["📁","No done leads yet","Mark calls done to see them here."],
+    all:     ["👥","No leads yet","Tap + Add Lead to get started."],
+  }[curTab] || ["👥","",""];
   return `<div class="empty"><div class="ei">${m[0]}</div><div class="et">${m[1]}</div><div class="es">${m[2]}</div></div>`;
 }
 
@@ -647,105 +663,84 @@ function showLoad() {
     `<div class="loading"><div class="spin"></div>Loading your leads…</div>`;
 }
 
-// ══════════════════════════════════════════
-// UPDATE MODAL
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
+// MODAL — open / close / save
+// ════════════════════════════════════════
 function openModal(ri) {
+  activeRowIndex = ri;
   const l = leads.find(x => x.rowIndex === ri);
   if (!l) return;
-  modalRowIndex = ri;
 
-  // Fill header
+  // Fill modal header
   document.getElementById("modal-name").textContent = l.name;
-  const sub = [l.interest, l.budget].filter(Boolean).join(" · ") || l.phone;
-  document.getElementById("modal-sub").textContent = sub;
+  document.getElementById("modal-sub").textContent =
+    [l.interest, l.budget].filter(Boolean).join(" · ") || "";
 
-  // Fill fields
-  setVal("m-status", l.leadStatus);
-  setVal("m-result", l.callResult);
-  document.getElementById("m-followdate").value = l.followDate || TODAY;
+  // Fill all fields with current values
+  setVal("m-status",   l.leadStatus);
+  setVal("m-result",   l.callResult);
+  setVal("m-date",     l.followDate || TODAY);
   setVal("m-priority", l.priority);
-  document.getElementById("m-propvalue").value = l.propValue || "";
-  document.getElementById("m-commission").value = l.commission || "";
-  document.getElementById("m-remarks").value = l.remarks || "";
+  setVal("m-propval",  l.propValue);
+  setVal("m-comm",     l.commission);
+  setVal("m-agent",    l.agentName);
+  document.getElementById("m-done").checked = l.callDone;
+  document.getElementById("modal-saved").style.display = "none";
+  document.getElementById("modal-save-btn").textContent = "💾 Save Update";
+  document.getElementById("modal-save-btn").disabled = false;
 
-  // Checkbox
-  const cb = document.getElementById("m-calldone");
-  cb.checked = l.callDone;
-  document.getElementById("m-done-row").classList.toggle("checked", l.callDone);
+  // Scroll modal body to top
+  document.querySelector(".modal-body").scrollTop = 0;
 
-  // Reset save state
-  const btn = document.getElementById("m-save-btn");
-  btn.disabled = false;
-  btn.textContent = "💾 Save Update";
-  document.getElementById("m-save-ok").style.display = "none";
-
-  // Scroll to top of modal body
-  document.getElementById("modal-body").scrollTop = 0;
-
-  // Open
-  document.getElementById("modal-bg").classList.add("open");
-  document.body.style.overflow = "hidden";
+  document.getElementById("modal-overlay").classList.add("open");
 }
 
 function closeModal() {
-  document.getElementById("modal-bg").classList.remove("open");
-  document.body.style.overflow = "";
-  modalRowIndex = null;
+  document.getElementById("modal-overlay").classList.remove("open");
+  activeRowIndex = null;
 }
 
-function modalBgTap(e) {
-  if (e.target.id === "modal-bg") closeModal();
+function modalOverlayTap(e) {
+  if (e.target.id === "modal-overlay") closeModal();
 }
 
-function toggleDone() {
-  const cb = document.getElementById("m-calldone");
-  cb.checked = !cb.checked;
-  const res = document.getElementById("m-result").value;
-  if (cb.checked && !res) {
-    toast("⚠️ Select a Call Result first");
-    cb.checked = false;
-  }
-  document.getElementById("m-done-row").classList.toggle("checked", cb.checked);
-}
+async function saveFromModal() {
+  const ri = activeRowIndex;
+  if (!ri) return;
 
-async function saveModal() {
-  if (!modalRowIndex) return;
-  const callDone   = document.getElementById("m-calldone").checked;
+  const callDone   = document.getElementById("m-done").checked;
   const callResult = document.getElementById("m-result").value;
-  const followDate = document.getElementById("m-followdate").value;
+  const followDate = document.getElementById("m-date").value;
   const leadStatus = document.getElementById("m-status").value;
   const priority   = document.getElementById("m-priority").value;
-  const propValue  = document.getElementById("m-propvalue").value;
-  const commission = document.getElementById("m-commission").value;
-  const remarks    = document.getElementById("m-remarks").value;
+  const propValue  = document.getElementById("m-propval").value;
+  const commission = document.getElementById("m-comm").value;
+  const agentName  = document.getElementById("m-agent").value;
 
+  // Enforce: must select call result before marking done
   if (callDone && !callResult) {
     toast("⚠️ Select a Call Result before marking Done");
-    document.getElementById("m-calldone").checked = false;
-    document.getElementById("m-done-row").classList.remove("checked");
+    document.getElementById("m-done").checked = false;
     return;
   }
 
-  const btn = document.getElementById("m-save-btn");
-  btn.disabled = true;
-  btn.textContent = "Saving…";
+  const btn = document.getElementById("modal-save-btn");
+  btn.disabled = true; btn.textContent = "Saving…";
 
   try {
     await fetch(API, {
-      method: "POST", mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify({
-        action: "updateLead", rowIndex: modalRowIndex,
-        callDone, callResult, followDate, leadStatus,
-        priority, propValue, commission, remarks
-      })
+      method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain"},
+      body: JSON.stringify({action:"updateLead", rowIndex:ri,
+        callDone, callResult, followDate, leadStatus, priority,
+        propValue, commission, agentName})
     });
 
     // Update local state
-    const l = leads.find(x => x.rowIndex === modalRowIndex);
+    const l = leads.find(x => x.rowIndex === ri);
     if (l) {
-      Object.assign(l, { callDone, callResult, followDate, leadStatus, priority, propValue, commission, remarks });
+      Object.assign(l, {callDone, callResult, followDate, leadStatus,
+        priority, propValue, commission, agentName});
       if (!followDate) l.status = "new";
       else if (followDate < TODAY) l.status = "overdue";
       else if (followDate === TODAY) l.status = "today";
@@ -753,69 +748,71 @@ async function saveModal() {
       l.isDone = callDone && callResult.trim() !== "";
     }
 
-    document.getElementById("m-save-ok").style.display = "block";
-    btn.textContent = "✓ Saved!";
+    document.getElementById("modal-saved").style.display = "block";
     toast("✓ Lead updated!");
 
     setTimeout(() => {
       closeModal();
       renderList();
-    }, 1000);
+    }, 1200);
 
-  } catch (e) {
+  } catch(e) {
     toast("Save failed — check connection");
-    btn.disabled = false;
-    btn.textContent = "💾 Save Update";
+  } finally {
+    btn.disabled = false; btn.textContent = "💾 Save Update";
   }
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 // ADD LEAD
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
+function openAddSheet()  { document.getElementById("aoverlay").classList.add("open"); }
+function closeAddSheet() { document.getElementById("aoverlay").classList.remove("open"); }
+function aOverlayTap(e) { if (e.target.id==="aoverlay") closeAddSheet(); }
+
 async function submitLead() {
   const name  = document.getElementById("fn").value.trim();
   const phone = document.getElementById("fp").value.trim();
-  if (!name)  { toast("⚠️ Name is required"); return; }
+  if (!name)  { toast("⚠️ Name is required");  return; }
   if (!phone) { toast("⚠️ Phone is required"); return; }
 
-  const btn = document.querySelector(".sh-submit");
+  const btn = document.querySelector(".ash-submit");
   btn.textContent = "Saving…"; btn.disabled = true;
 
   const data = {
-    action: "addLead", name, phone,
-    whatsapp: document.getElementById("fw").value.trim() || phone,
-    email: document.getElementById("fe").value.trim(),
-    interest: document.getElementById("fi").value,
-    budget: document.getElementById("fb").value,
-    source: document.getElementById("fs").value || "Manual entry",
-    project: document.getElementById("fpr").value.trim(),
-    location: document.getElementById("fl").value.trim(),
+    action:"addLead", name, phone,
+    whatsapp  : document.getElementById("fw").value.trim()  || phone,
+    email     : document.getElementById("fe").value.trim(),
+    interest  : document.getElementById("fi").value,
+    budget    : document.getElementById("fb").value,
+    source    : document.getElementById("fs").value || "Manual entry",
+    project   : document.getElementById("fpr").value.trim(),
+    location  : document.getElementById("fl").value.trim(),
     followDate: document.getElementById("fd").value,
-    agentName: document.getElementById("fan").value.trim()
+    agentName : document.getElementById("fan").value.trim(),
   };
 
   try {
-    await fetch(API, {
-      method: "POST", mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(data)
-    });
-    leads.unshift(norm({ ...data, rowIndex: Date.now(), callDone: false, callResult: "" }));
+    await fetch(API, {method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain"}, body:JSON.stringify(data)});
+    leads.unshift(norm({...data, rowIndex:Date.now(), callDone:false, callResult:""}));
     ["fn","fp","fw","fe","fpr","fl","fan"].forEach(id => document.getElementById(id).value = "");
     ["fi","fb","fs"].forEach(id => document.getElementById(id).selectedIndex = 0);
     document.getElementById("fd").value = TODAY;
-    closeSheet(); renderList(); toast("✓ Lead added!");
+    closeAddSheet();
+    renderList();
+    toast("✓ Lead added!");
     setTimeout(loadLeads, 3000);
-  } catch (e) {
-    toast("⚠️ Could not add — check API URL");
+  } catch(e) {
+    toast("⚠️ Could not add lead — check API URL");
   } finally {
     btn.textContent = "💾 Save Lead"; btn.disabled = false;
   }
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 // UI HELPERS
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 function switchTab(el) {
   curTab = el.dataset.tab;
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -827,13 +824,11 @@ function switchTabKey(k) {
   const el = document.querySelector(`[data-tab="${k}"]`);
   if (el) switchTab(el);
 }
-function openSheet()  { document.getElementById("overlay").classList.add("open"); }
-function closeSheet() { document.getElementById("overlay").classList.remove("open"); }
-function oTap(e) { if (e.target.id === "overlay") closeSheet(); }
 
 function openWA(phone, name) {
   if (!phone) { toast("No WhatsApp number"); return; }
-  const msg = encodeURIComponent(`Hi ${name}, following up on your property enquiry. Are you still interested?`);
+  const msg = encodeURIComponent(
+    `Hi ${name}, following up on your property enquiry. Are you still interested?`);
   window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
 }
 function openCall(phone) {
@@ -841,37 +836,36 @@ function openCall(phone) {
   window.location.href = "tel:+" + phone;
 }
 
-function setVal(id, val) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const opt = Array.from(el.options).find(o => o.value === val || o.text === val);
-  if (opt) el.value = opt.value; else el.selectedIndex = 0;
-}
-
 let toastT;
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
-  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2800);
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove("show"), 2800);
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 // UTILS
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = val || "";
+}
 function tds(v) {
   if (!v) return "";
-  if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
+  if (typeof v==="string" && /^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0,10);
   const d = new Date(v); return isNaN(d) ? "" : d.toISOString().split("T")[0];
 }
 function fmtD(d) {
   if (!d) return "";
-  return new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+  return new Date(d+"T00:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
 }
-function ini(n) { return (n || "?").trim().split(" ").filter(Boolean).map(w => w[0]).join("").toUpperCase().slice(0, 2) || "?"; }
-const AVC = ["av-g","av-b","av-a","av-r"];
-function avc(n) { let h = 0; for (let i = 0; i < (n||"").length; i++) h = (h * 31 + n.charCodeAt(i)) & 0xffff; return AVC[h % AVC.length]; }
-function xe(v) { return (v == null) ? "" : String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function xs(v) { return (v == null) ? "" : String(v); }
+function ini(n) { return (n||"?").trim().split(" ").filter(Boolean).map(w=>w[0]).join("").toUpperCase().slice(0,2)||"?"; }
+const AVC = ["av-g","av-b","av-a","av-r","av-p"];
+function avc(n) { let h=0; for(let i=0;i<(n||"").length;i++) h=(h*31+n.charCodeAt(i))&0xffff; return AVC[h%AVC.length]; }
+function xe(v) { return (v==null)?"":String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function xs(v) { return (v==null)?"":String(v); }
 </script>
 </body>
 </html>
