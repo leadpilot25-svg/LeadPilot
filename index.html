@@ -528,7 +528,7 @@ async function saveModal(){
   const btn=document.getElementById("msavebtn");
   btn.disabled=true;btn.textContent="Saving…";
   try{
-    await fetch(API,{method:"POST",mode:"no-cors",
+    await fetch(API,{method:"POST",
       headers:{"Content-Type":"text/plain"},
       body:JSON.stringify({action:"updateLead",rowIndex:ri,
         callDone,callResult,followDate,leadStatus,priority,propValue,commission,agentName})});
