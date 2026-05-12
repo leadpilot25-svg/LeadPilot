@@ -13,7 +13,7 @@
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
   background:#F4F3EF;color:#0D0D0B;-webkit-font-smoothing:antialiased}
-button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;border:none;outline:none;background:none;cursor:pointer}
+button,input,select{font-family:inherit;border:none;outline:none;background:none;cursor:pointer}
 :root{
   --g:#0FA573;--gd:#097A54;--gl:#D6F5E9;
   --r:#E53E2C;--rl:#FDECEA;
@@ -26,42 +26,15 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
   --safe-b:env(safe-area-inset-bottom,0px);
 }
 
-/* ══════════════════════════════════════
-   THE MOST IMPORTANT PART:
-   App is a fixed full-screen column.
-   #list gets flex:1 and overflow-y:auto.
-   Bottom nav is fixed separately.
-   This guarantees scroll always works.
-══════════════════════════════════════ */
+/* ── APP SHELL ── */
 #app{
   position:fixed;top:0;left:50%;transform:translateX(-50%);
   width:100%;max-width:480px;height:100%;
-  display:flex;flex-direction:column;
-  background:var(--bg);
+  display:flex;flex-direction:column;background:var(--bg);
 }
+
+/* ── TOPBAR ── */
 #topbar{background:var(--g);padding:calc(var(--safe-t)+10px) 14px 10px;flex-shrink:0}
-#stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 12px 0;flex-shrink:0}
-#srchwrap{padding:8px 12px 0;flex-shrink:0}
-#tabwrap{padding:8px 12px 0;flex-shrink:0}
-
-/* list: flex:1 takes remaining height, overflow scrolls */
-#list{
-  flex:1;min-height:0;
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:10px 12px 80px; /* 80px bottom so last card not hidden behind nav */
-  display:flex;flex-direction:column;gap:10px;
-}
-#list::-webkit-scrollbar{display:none}
-
-/* fixed bottom nav */
-#bnav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:480px;
-  display:flex;background:#fff;border-top:1.5px solid var(--bd);
-  padding:6px 0 calc(6px + var(--safe-b));z-index:200;
-}
-
-/* ── topbar ── */
 .tr{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .tname{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px}
 .tdate{font-size:12px;color:rgba(255,255,255,.65);margin-top:1px;font-weight:600}
@@ -69,45 +42,78 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
   font-size:14px;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .add-btn:active{opacity:.8}
 
-/* ── stats ── */
-.stat{background:var(--card);border-radius:11px;padding:9px 4px;
-  text-align:center;border:1.5px solid var(--bd)}
+/* ── STATS — clickable cards ── */
+#stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 12px 0;flex-shrink:0}
+.stat{
+  background:var(--card);border-radius:11px;padding:9px 4px;
+  text-align:center;border:1.5px solid var(--bd);
+  cursor:pointer;transition:all .15s;user-select:none;
+}
+.stat:active{transform:scale(.95)}
+/* active stat highlights matching the color */
+.stat.active-ov{background:var(--rl);border-color:var(--r)}
+.stat.active-td{background:var(--al);border-color:var(--a)}
+.stat.active-up{background:var(--gl);border-color:var(--g)}
+.stat.active-al{background:var(--bl);border-color:var(--b)}
 .sn{font-size:24px;font-weight:800;line-height:1}
 .sl{font-size:10px;font-weight:700;color:var(--tx2);margin-top:3px;
   text-transform:uppercase;letter-spacing:.4px}
 .cr{color:var(--r)}.ca{color:var(--a)}.cg{color:var(--g)}.cb{color:var(--b)}
 
-/* ── search ── */
+/* ── SEARCH ── */
+#srchwrap{padding:8px 12px 0;flex-shrink:0}
 .sbox{display:flex;align-items:center;gap:8px;background:var(--card);
   border-radius:11px;padding:11px 13px;border:1.5px solid var(--bd)}
 .sbox input{flex:1;font-size:15px;background:transparent;color:var(--tx);font-weight:500}
 .sbox input::placeholder{color:var(--tx3)}
 
-/* ── tabs ── */
+/* ── TABS ── */
+#tabwrap{padding:8px 12px 0;flex-shrink:0}
 .tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
   scrollbar-width:none;padding-bottom:2px}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex-shrink:0;padding:8px 14px;border-radius:10px;font-size:13px;font-weight:700;
-  background:var(--card);color:var(--tx2);border:1.5px solid var(--bd);white-space:nowrap}
+  background:var(--card);color:var(--tx2);border:1.5px solid var(--bd);white-space:nowrap;
+  cursor:pointer;transition:all .15s}
 .tab.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+/* stat-driven tab highlights */
+.tab.hl-ov{background:var(--rl);color:var(--r);border-color:var(--r)}
+.tab.hl-td{background:var(--al);color:var(--a);border-color:var(--a)}
+.tab.hl-up{background:var(--gl);color:var(--gd);border-color:var(--g)}
+.tab.hl-al{background:var(--bl);color:var(--b);border-color:var(--b)}
 .tbdg{display:inline-block;background:var(--r);color:#fff;border-radius:20px;
   font-size:10px;font-weight:800;padding:1px 6px;margin-left:4px;vertical-align:middle}
 .tab.active .tbdg{background:rgba(255,255,255,.25)}
 
-/* ── bottom nav ── */
+/* ── LIST ── */
+#list{
+  flex:1;min-height:0;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:10px 12px 80px;
+  display:flex;flex-direction:column;gap:10px;
+}
+#list::-webkit-scrollbar{display:none}
+
+/* ── BOTTOM NAV (fixed) ── */
+#bnav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;
+  display:flex;background:#fff;border-top:1.5px solid var(--bd);
+  padding:6px 0 calc(6px + var(--safe-b));z-index:200;
+}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
   cursor:pointer;padding:4px 0;color:var(--tx2);font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:.3px}
 .ni.active{color:var(--g)}
 .ni-ico{font-size:22px;line-height:1}
 
-/* ── card ── */
+/* ── CARDS ── */
 .card{background:var(--card);border-radius:16px;border:1.5px solid var(--bd)}
 .card.overdue {border-left:4px solid var(--r)}
 .card.today   {border-left:4px solid var(--a)}
 .card.upcoming{border-left:4px solid var(--g)}
 .card.new     {border-left:4px solid var(--b)}
-.card.done-c  {border-left:4px solid #ccc;opacity:.7}
+.card.done-c  {border-left:4px solid #ccc;opacity:.75}
 
 .ch{padding:13px 13px 8px;display:flex;align-items:flex-start;gap:11px}
 .av{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;
@@ -141,7 +147,7 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
   padding:13px;font-size:15px;font-weight:800;text-align:center}
 .ubtn:active{background:var(--gd)}
 
-/* ── empty / loading ── */
+/* ── EMPTY / LOADING ── */
 .empty{display:flex;flex-direction:column;align-items:center;
   justify-content:center;padding:60px 24px;text-align:center;gap:10px}
 .ei{font-size:52px;opacity:.25}.et{font-size:19px;font-weight:800}
@@ -152,14 +158,14 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
   border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* ── update modal ── */
-.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;
+/* ── UPDATE MODAL ── */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;
   display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
-.moverlay.open{opacity:1;pointer-events:all}
+.mov.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:22px 22px 0 0;width:100%;height:88dvh;
   display:flex;flex-direction:column;
   transform:translateY(100%);transition:transform .27s cubic-bezier(.32,.72,0,1)}
-.moverlay.open .modal{transform:translateY(0)}
+.mov.open .modal{transform:translateY(0)}
 .mhd{padding:14px 16px 12px;border-bottom:1.5px solid var(--bd);
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .mnm{font-size:17px;font-weight:800;color:var(--tx)}
@@ -178,7 +184,8 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
 .mf input,.mf select{width:100%;padding:14px 13px;border-radius:11px;
   border:1.5px solid var(--bd);background:var(--bg);
   font-size:16px;font-weight:500;color:var(--tx);-webkit-appearance:none}
-.mf select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+.mf select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 13px center;padding-right:38px}
 .mf input:focus,.mf select:focus{border-color:var(--g);background:#fff}
 .drow{display:flex;align-items:center;gap:13px;background:var(--gl);
@@ -191,7 +198,7 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
 .msavebtn:disabled{opacity:.4}
 .msavedtxt{text-align:center;color:var(--g);font-size:14px;font-weight:800;padding:4px 0}
 
-/* ── add lead sheet ── */
+/* ── ADD LEAD SHEET ── */
 .aov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;
   display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
 .aov.open{opacity:1;pointer-events:all}
@@ -210,7 +217,8 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
 .af input,.af select{width:100%;padding:13px 12px;border-radius:10px;
   border:1.5px solid var(--bd);background:var(--bg);
   font-size:15px;font-weight:500;color:var(--tx);-webkit-appearance:none}
-.af select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+.af select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
 .af input:focus,.af select:focus{border-color:var(--g);background:#fff}
 .ashok{margin:14px 18px 0;width:calc(100% - 36px);background:var(--g);color:#fff;
@@ -220,7 +228,7 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
   color:var(--tx2);border-radius:11px;padding:13px;font-size:15px;
   font-weight:700;border:1.5px solid var(--bd)}
 
-/* ── toast ── */
+/* ── TOAST ── */
 .toast{position:fixed;bottom:80px;left:50%;
   transform:translateX(-50%) translateY(16px);
   background:#111;color:#fff;padding:11px 20px;border-radius:50px;
@@ -237,18 +245,30 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
       <button class="add-btn" onclick="openAdd()">＋ Add Lead</button>
     </div>
   </div>
+
+  <!-- STAT CARDS — each one clickable, switches tab -->
   <div id="stats">
-    <div class="stat"><div class="sn cr" id="s-ov">—</div><div class="sl">Overdue</div></div>
-    <div class="stat"><div class="sn ca" id="s-td">—</div><div class="sl">Today</div></div>
-    <div class="stat"><div class="sn cg" id="s-up">—</div><div class="sl">Soon</div></div>
-    <div class="stat"><div class="sn cb" id="s-al">—</div><div class="sl">Total</div></div>
+    <div class="stat" id="stat-ov" onclick="statClick('overdue','stat-ov','active-ov','hl-ov')">
+      <div class="sn cr" id="s-ov">—</div><div class="sl">Overdue</div>
+    </div>
+    <div class="stat" id="stat-td" onclick="statClick('today','stat-td','active-td','hl-td')">
+      <div class="sn ca" id="s-td">—</div><div class="sl">Today</div>
+    </div>
+    <div class="stat" id="stat-up" onclick="statClick('upcoming','stat-up','active-up','hl-up')">
+      <div class="sn cg" id="s-up">—</div><div class="sl">Soon</div>
+    </div>
+    <div class="stat" id="stat-al" onclick="statClick('all','stat-al','active-al','hl-al')">
+      <div class="sn cb" id="s-al">—</div><div class="sl">Total</div>
+    </div>
   </div>
+
   <div id="srchwrap">
     <div class="sbox">
       <span style="font-size:17px">🔍</span>
       <input id="search" placeholder="Search name, phone, interest…" oninput="render()"/>
     </div>
   </div>
+
   <div id="tabwrap">
     <div class="tabs">
       <div class="tab active" data-tab="today"    onclick="setTab(this)">Today    <span class="tbdg" id="tb-t">0</span></div>
@@ -259,8 +279,9 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
       <div class="tab"        data-tab="done"      onclick="setTab(this)">Done</div>
     </div>
   </div>
-  <!-- THIS IS THE KEY: flex:1 + overflow-y:auto + padding-bottom:80px -->
+
   <div id="list"></div>
+
   <div id="bnav">
     <div class="ni active" onclick="setTabKey('today')"> <div class="ni-ico">📋</div>Today</div>
     <div class="ni"        onclick="setTabKey('all')">   <div class="ni-ico">👥</div>All</div>
@@ -271,7 +292,7 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
 </div>
 
 <!-- UPDATE MODAL -->
-<div class="moverlay" id="moverlay" onclick="mOvTap(event)">
+<div class="mov" id="mov" onclick="movTap(event)">
   <div class="modal">
     <div class="mhd">
       <div><div class="mnm" id="m-nm">Update Lead</div><div class="msb" id="m-sb"></div></div>
@@ -286,7 +307,7 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
           <option>Negotiation</option><option>Converted</option>
           <option>Lost</option><option>On Hold</option><option>Follow Up</option>
         </select></div>
-      <div class="mf"><label>Call Result ★ (required before Done)</label>
+      <div class="mf"><label>Call Result ★ Required before Done</label>
         <select id="m-res"><option value="">Select result…</option>
           <option>Interested</option><option>Not Interested</option>
           <option>Call Back Later</option><option>No Answer</option>
@@ -309,7 +330,9 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
       <div class="sec">✅ Mark complete</div>
       <div class="drow">
         <input type="checkbox" id="m-done"/>
-        <label for="m-done">Call Done ✓<br/><span style="font-size:13px;font-weight:500;color:var(--gd)">Select result above first</span></label>
+        <label for="m-done">Call Done ✓<br/>
+          <span style="font-size:13px;font-weight:500;color:var(--gd)">Select result above first</span>
+        </label>
       </div>
       <button class="msavebtn" id="msavebtn" onclick="saveModal()">💾 Save Update</button>
       <div class="msavedtxt" id="msavedtxt" style="display:none">✓ Saved successfully!</div>
@@ -318,7 +341,7 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
 </div>
 
 <!-- ADD LEAD -->
-<div class="aov" id="aov" onclick="aOvTap(event)">
+<div class="aov" id="aov" onclick="aovTap(event)">
   <div class="ash">
     <div class="ashw"><div class="ashh"></div></div>
     <div class="asht">Add New Lead</div>
@@ -351,7 +374,6 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
             <option>Referral</option><option>Walk-in</option><option>Other</option>
           </select></div>
       </div>
-      <div class="af"><label>Project</label><input id="fpr" placeholder="Project name"/></div>
       <div class="af"><label>Preferred Location</label><input id="fl" placeholder="Area / locality"/></div>
       <div class="af"><label>Follow-up Date</label><input id="fd" type="date"/></div>
       <div class="af"><label>Agent Name</label><input id="fan" placeholder="Your name"/></div>
@@ -364,17 +386,16 @@ button,input,select{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Aria
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════
+// ════════════════════════════════
 // ⚙️  PASTE YOUR API URL HERE
-// ════════════════════════════
+// ════════════════════════════════
 const API = "https://script.google.com/macros/s/AKfycbw-CHiRS8-T3yvfqSNGfTXUObycGBdTtwVsCJSs5tHtj6MsAtzwuoZom4cox2XUbCU1dA/exec";
 
 let leads=[], curTab="today", activeRI=null;
 
-// LOCAL today — fixes India date off-by-one
 function localToday(){
   const d=new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 const TODAY=localToday();
 
@@ -387,17 +408,22 @@ document.addEventListener("DOMContentLoaded",()=>{
   load();
 });
 
+// ════════════════════════════════
+// LOAD
+// ════════════════════════════════
 async function load(){
   document.getElementById("list").innerHTML=
     `<div class="loading"><div class="spin"></div>Loading your leads…</div>`;
   try{
-    const r=await fetch(API+(API.includes("?")?"&":"?")+"action=getLeads&t="+Date.now(),{redirect:"follow"});
-    leads=(JSON.parse(await r.text())).map(norm);
+    const url=API+(API.includes("?")?"&":"?")+"action=getLeads&t="+Date.now();
+    const r=await fetch(url,{redirect:"follow"});
+    const txt=await r.text();
+    leads=JSON.parse(txt).map(norm);
     render();
   }catch(e){
     document.getElementById("list").innerHTML=
       `<div class="empty"><div class="ei">⚠️</div><div class="et">Cannot load leads</div>
-       <div class="es">Check your API URL in the HTML file.<br/><small>${e.message}</small></div></div>`;
+       <div class="es">Check your API URL.<br/><small>${e.message}</small></div></div>`;
   }
 }
 
@@ -412,14 +438,13 @@ function norm(r){
   const wa=S(r.whatsapp).replace(/\D/g,"")||ph;
   return{ri:r.rowIndex,name:S(r.name)||"—",phone:ph,whatsapp:wa,
     email:S(r.email),interest:S(r.interest),budget:S(r.budget),
-    project:S(r.project),source:S(r.source),location:S(r.location),
-    remarks:S(r.remarks),leadStatus:S(r.leadStatus),followDate:fd,
-    callDone:done,callResult:res,propValue:S(r.propValue),
-    commission:S(r.commission),priority:S(r.priority),agentName:S(r.agentName),
-    status:st,isDone,initials:INI(S(r.name)),color:COL(S(r.name))};
+    source:S(r.source),location:S(r.location),remarks:S(r.remarks),
+    leadStatus:S(r.leadStatus),followDate:fd,callDone:done,callResult:res,
+    propValue:S(r.propValue),commission:S(r.commission),priority:S(r.priority),
+    agentName:S(r.agentName),status:st,isDone,
+    initials:INI(S(r.name)),color:COL(S(r.name))};
 }
 
-// Fix date: parse as local to avoid UTC shift (India IST = UTC+5:30)
 function fixDate(v){
   if(!v)return"";
   if(typeof v==="string"&&/^\d{4}-\d{2}-\d{2}/.test(v))return v.slice(0,10);
@@ -427,6 +452,9 @@ function fixDate(v){
   return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 
+// ════════════════════════════════
+// RENDER
+// ════════════════════════════════
 function render(){
   doStats();
   const q=(document.getElementById("search").value||"").toLowerCase();
@@ -485,42 +513,101 @@ function cardHTML(l){
 
 function emptyHTML(){
   const m={
-    today: ["📋","Nothing due today","New, overdue & today's leads appear here."],
-    new:   ["🔵","No new leads","New form submissions appear here first."],
+    today:  ["📋","Nothing due today","New, overdue & today's leads appear here."],
+    new:    ["🔵","No new leads","New form submissions appear here."],
     overdue:["🎉","No overdue!","All on track."],
     upcoming:["📅","No upcoming","Set follow-up dates to see leads here."],
-    done:  ["📁","No done yet","Mark calls done to see them here."],
-    all:   ["👥","No leads yet","Tap + Add Lead to start."],
+    done:   ["📁","No done yet","Mark calls done to see them here."],
+    all:    ["👥","No leads yet","Tap + Add Lead to start."],
   }[curTab]||["👥","",""];
   return`<div class="empty"><div class="ei">${m[0]}</div><div class="et">${m[1]}</div><div class="es">${m[2]}</div></div>`;
 }
 
+// ════════════════════════════════
+// STAT CARD CLICK
+// Clicking a stat card switches tab AND highlights it
+// ════════════════════════════════
+function statClick(tabKey, statId, statActiveClass, tabHlClass){
+  // Remove all active states from stat cards
+  ["stat-ov","stat-td","stat-up","stat-al"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.className="stat"; // reset
+  });
+  // Remove highlight classes from all tabs
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.classList.remove("active","hl-ov","hl-td","hl-up","hl-al");
+  });
+
+  // Highlight clicked stat card
+  const statEl=document.getElementById(statId);
+  if(statEl) statEl.classList.add(statActiveClass);
+
+  // Find and highlight matching tab
+  const tabEl=document.querySelector(`[data-tab="${tabKey}"]`);
+  if(tabEl){
+    tabEl.classList.add(tabHlClass);
+    curTab=tabKey;
+  }
+
+  render();
+  document.getElementById("list").scrollTop=0;
+}
+
+// ════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════
+function setTab(el){
+  curTab=el.dataset.tab;
+  // Clear stat highlights
+  ["stat-ov","stat-td","stat-up","stat-al"].forEach(id=>{
+    const s=document.getElementById(id);
+    if(s) s.className="stat";
+  });
+  // Set tab active
+  document.querySelectorAll(".tab").forEach(t=>t.className="tab");
+  el.classList.add("active");
+  document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));
+  render();
+  document.getElementById("list").scrollTop=0;
+}
+
+function setTabKey(k){
+  const el=document.querySelector(`[data-tab="${k}"]`);
+  if(el)setTab(el);
+}
+
+// ════════════════════════════════
+// MODAL — update lead
+// ════════════════════════════════
 function openModal(ri){
   activeRI=ri;
   const l=leads.find(x=>x.ri===ri);if(!l)return;
-  T2("m-nm",l.name);T2("m-sb",[l.interest,l.budget].filter(Boolean).join(" · "));
-  V("m-st",l.leadStatus);V("m-res",l.callResult);V("m-dt",l.followDate||TODAY);
-  V("m-pr",l.priority);V("m-pv",l.propValue);V("m-cm",l.commission);V("m-ag",l.agentName);
+  T2("m-nm",l.name);
+  T2("m-sb",[l.interest,l.budget].filter(Boolean).join(" · "));
+  V("m-st",l.leadStatus);V("m-res",l.callResult);
+  V("m-dt",l.followDate||TODAY);V("m-pr",l.priority);
+  V("m-pv",l.propValue);V("m-cm",l.commission);V("m-ag",l.agentName);
   document.getElementById("m-done").checked=l.callDone;
   document.getElementById("msavedtxt").style.display="none";
   document.getElementById("msavebtn").disabled=false;
   document.getElementById("msavebtn").textContent="💾 Save Update";
   document.querySelector(".mbody").scrollTop=0;
-  document.getElementById("moverlay").classList.add("open");
+  document.getElementById("mov").classList.add("open");
 }
-function closeModal(){document.getElementById("moverlay").classList.remove("open");activeRI=null;}
-function mOvTap(e){if(e.target.id==="moverlay")closeModal();}
+function closeModal(){document.getElementById("mov").classList.remove("open");activeRI=null;}
+function movTap(e){if(e.target.id==="mov")closeModal();}
 
 async function saveModal(){
   const ri=activeRI;if(!ri)return;
-  const callDone=document.getElementById("m-done").checked;
+  const callDone  =document.getElementById("m-done").checked;
   const callResult=document.getElementById("m-res").value;
   const followDate=document.getElementById("m-dt").value;
   const leadStatus=document.getElementById("m-st").value;
-  const priority=document.getElementById("m-pr").value;
-  const propValue=document.getElementById("m-pv").value;
+  const priority  =document.getElementById("m-pr").value;
+  const propValue =document.getElementById("m-pv").value;
   const commission=document.getElementById("m-cm").value;
-  const agentName=document.getElementById("m-ag").value;
+  const agentName =document.getElementById("m-ag").value;
+
   if(callDone&&!callResult){
     toast("⚠️ Select Call Result first");
     document.getElementById("m-done").checked=false;return;
@@ -528,73 +615,114 @@ async function saveModal(){
   const btn=document.getElementById("msavebtn");
   btn.disabled=true;btn.textContent="Saving…";
   try{
-    await fetch(API,{method:"POST",
+    // Use regular fetch (no no-cors) so we get response back
+    const r=await fetch(API,{
+      method:"POST",
       headers:{"Content-Type":"text/plain"},
       body:JSON.stringify({action:"updateLead",rowIndex:ri,
-        callDone,callResult,followDate,leadStatus,priority,propValue,commission,agentName})});
+        callDone,callResult,followDate,leadStatus,priority,propValue,commission,agentName})
+    });
+    const resp=await r.json();
+    if(resp.success){
+      const l=leads.find(x=>x.ri===ri);
+      if(l){
+        Object.assign(l,{callDone,callResult,followDate,leadStatus,
+          priority,propValue,commission,agentName});
+        if(!followDate)l.status="new";
+        else if(followDate<TODAY)l.status="overdue";
+        else if(followDate===TODAY)l.status="today";
+        else l.status="upcoming";
+        l.isDone=callDone&&callResult.trim()!=="";
+      }
+      document.getElementById("msavedtxt").style.display="block";
+      toast("✓ Updated!");
+      setTimeout(()=>{closeModal();render();},1200);
+    }
+  }catch(e){
+    // If CORS blocks response, the save still went through
+    // Update locally and reload to confirm
     const l=leads.find(x=>x.ri===ri);
     if(l){
-      Object.assign(l,{callDone,callResult,followDate,leadStatus,priority,propValue,commission,agentName});
+      Object.assign(l,{callDone,callResult,followDate,leadStatus,
+        priority,propValue,commission,agentName});
       if(!followDate)l.status="new";
       else if(followDate<TODAY)l.status="overdue";
       else if(followDate===TODAY)l.status="today";
       else l.status="upcoming";
       l.isDone=callDone&&callResult.trim()!=="";
     }
-    document.getElementById("msavedtxt").style.display="block";
-    toast("✓ Updated!");
-    setTimeout(()=>{closeModal();render();},1200);
-  }catch(e){toast("Save failed");}
+    toast("✓ Saved — reloading to confirm");
+    setTimeout(()=>{closeModal();load();},1500);
+  }
   finally{btn.disabled=false;btn.textContent="💾 Save Update";}
 }
 
+// ════════════════════════════════
+// ADD LEAD
+// ════════════════════════════════
 function openAdd(){document.getElementById("aov").classList.add("open");}
 function closeAdd(){document.getElementById("aov").classList.remove("open");}
-function aOvTap(e){if(e.target.id==="aov")closeAdd();}
+function aovTap(e){if(e.target.id==="aov")closeAdd();}
 
 async function submitLead(){
-  const name=document.getElementById("fn").value.trim();
+  const name =document.getElementById("fn").value.trim();
   const phone=document.getElementById("fp").value.trim();
   if(!name){toast("⚠️ Name required");return;}
   if(!phone){toast("⚠️ Phone required");return;}
+
   const btn=document.querySelector(".ashok");
   btn.textContent="Saving…";btn.disabled=true;
+
   const data={action:"addLead",name,phone,
     whatsapp:document.getElementById("fw").value.trim()||phone,
     email:document.getElementById("fe").value.trim(),
     interest:document.getElementById("fi").value,
     budget:document.getElementById("fb").value,
-    source:document.getElementById("fs").value||"Manual entry",
-    project:document.getElementById("fpr").value.trim(),
+    source:document.getElementById("fs")?document.getElementById("fs").value:"Manual entry",
     location:document.getElementById("fl").value.trim(),
     followDate:document.getElementById("fd").value,
     agentName:document.getElementById("fan").value.trim()};
+
   try{
-    await fetch(API,{method:"POST",mode:"no-cors",
-      headers:{"Content-Type":"text/plain"},body:JSON.stringify(data)});
-    leads.unshift(norm({...data,rowIndex:Date.now(),callDone:false,callResult:""}));
-    ["fn","fp","fw","fe","fpr","fl","fan"].forEach(id=>document.getElementById(id).value="");
-    ["fi","fb","fs"].forEach(id=>document.getElementById(id).selectedIndex=0);
-    document.getElementById("fd").value=TODAY;
-    closeAdd();render();toast("✓ Lead added!");
-    setTimeout(load,3000);
-  }catch(e){toast("⚠️ Could not add lead");}
+    // Step 1: try with regular fetch to get rowIndex back
+    const r=await fetch(API,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain"},
+      body:JSON.stringify(data)
+    });
+    const resp=await r.json();
+    if(resp.rowIndex){
+      leads.unshift(norm({...data,rowIndex:resp.rowIndex,callDone:false,callResult:""}));
+    }
+    clearAddForm();
+    closeAdd();render();toast("✓ Lead added to sheet!");
+  }catch(e){
+    // CORS fallback: send with no-cors, optimistically add locally
+    try{
+      await fetch(API,{method:"POST",mode:"no-cors",
+        headers:{"Content-Type":"text/plain"},body:JSON.stringify(data)});
+      leads.unshift(norm({...data,rowIndex:Date.now(),callDone:false,callResult:""}));
+      clearAddForm();
+      closeAdd();render();
+      toast("✓ Sent — reloading from sheet…");
+      setTimeout(load,4000); // reload after 4s to get real data from sheet
+    }catch(e2){
+      toast("⚠️ Could not add lead — check API URL");
+    }
+  }
   finally{btn.textContent="💾 Save Lead";btn.disabled=false;}
 }
 
-function setTab(el){
-  curTab=el.dataset.tab;
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  el.classList.add("active");
-  document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));
-  render();
-  document.getElementById("list").scrollTop=0;
-}
-function setTabKey(k){
-  const el=document.querySelector(`[data-tab="${k}"]`);
-  if(el)setTab(el);
+function clearAddForm(){
+  ["fn","fp","fw","fe","fl","fan"].forEach(id=>document.getElementById(id).value="");
+  ["fi","fb"].forEach(id=>document.getElementById(id).selectedIndex=0);
+  const fs=document.getElementById("fs");if(fs)fs.selectedIndex=0;
+  document.getElementById("fd").value=TODAY;
 }
 
+// ════════════════════════════════
+// UTILS
+// ════════════════════════════════
 function WA(phone,name){
   if(!phone){toast("No WhatsApp number");return;}
   const msg=encodeURIComponent(`Hi ${name}, following up on your enquiry. Are you still interested?`);
@@ -606,7 +734,7 @@ let toastT;
 function toast(msg){
   const t=document.getElementById("toast");
   t.textContent=msg;t.classList.add("show");
-  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2800);
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3000);
 }
 function T(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function T2(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
