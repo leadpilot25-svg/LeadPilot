@@ -9,113 +9,146 @@
 <meta name="apple-mobile-web-app-title" content="LeadPilot"/>
 <title>LeadPilot</title>
 <style>
+/* ─── RESET ─── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
-  background:#F4F3EF;color:#0D0D0B;-webkit-font-smoothing:antialiased}
+  background:#F2F1ED;color:#0D0D0B;-webkit-font-smoothing:antialiased}
 button,input,select{font-family:inherit;border:none;outline:none;background:none;cursor:pointer}
+
+/* ─── TOKENS ─── */
 :root{
-  --g:#0FA573;--gd:#097A54;--gl:#D6F5E9;
+  --g:#0FA573;--gd:#097A54;--gl:#D4F5E9;
   --r:#E53E2C;--rl:#FDECEA;
-  --a:#E07B00;--al:#FFF0D6;
-  --b:#1A6FD4;--bl:#E3EEFB;
+  --a:#D97706;--al:#FEF3C7;
+  --b:#2563EB;--bl:#DBEAFE;
   --p:#7C3AED;--pl:#EDE9FE;
-  --tx:#0D0D0B;--tx2:#5C5C56;--tx3:#A0A09A;
-  --bg:#F4F3EF;--card:#FFF;--bd:#E5E4DF;
-  --safe-t:env(safe-area-inset-top,0px);
-  --safe-b:env(safe-area-inset-bottom,0px);
+  --tx:#111110;--tx2:#57574F;--tx3:#9E9E96;
+  --bg:#F2F1ED;--card:#FFFFFF;--bd:#E2E1DC;
+  --st:env(safe-area-inset-top,0px);
+  --sb:env(safe-area-inset-bottom,0px);
 }
 
-/* ── APP SHELL ── */
+/* ─── APP SHELL ─── */
 #app{
   position:fixed;top:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:480px;height:100%;
-  display:flex;flex-direction:column;background:var(--bg);
+  width:100%;max-width:480px;height:100dvh;
+  display:flex;flex-direction:column;
 }
 
-/* ── TOPBAR ── */
-#topbar{background:var(--g);padding:calc(var(--safe-t)+10px) 14px 10px;flex-shrink:0}
+/* ─── TOPBAR ─── */
+#topbar{
+  background:var(--g);
+  padding:calc(var(--st) + 12px) 16px 12px;
+  flex-shrink:0;
+}
 .tr{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.tname{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px}
-.tdate{font-size:12px;color:rgba(255,255,255,.65);margin-top:1px;font-weight:600}
-.add-btn{background:#fff;color:var(--gd);border-radius:11px;padding:10px 14px;
-  font-size:14px;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-.add-btn:active{opacity:.8}
-
-/* ── STATS — clickable cards ── */
-#stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 12px 0;flex-shrink:0}
-.stat{
-  background:var(--card);border-radius:11px;padding:9px 4px;
-  text-align:center;border:1.5px solid var(--bd);
-  cursor:pointer;transition:all .15s;user-select:none;
+.tname{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1}
+.tdate{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px;font-weight:600}
+.add-btn{
+  background:#fff;color:var(--gd);border-radius:12px;
+  padding:10px 16px;font-size:14px;font-weight:800;
+  white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15);flex-shrink:0;
 }
-.stat:active{transform:scale(.95)}
-/* active stat highlights matching the color */
-.stat.active-ov{background:var(--rl);border-color:var(--r)}
-.stat.active-td{background:var(--al);border-color:var(--a)}
-.stat.active-up{background:var(--gl);border-color:var(--g)}
-.stat.active-al{background:var(--bl);border-color:var(--b)}
+.add-btn:active{opacity:.75}
+
+/* ─── STAT CARDS — clickable ─── */
+#stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:6px;padding:10px 12px 0;flex-shrink:0;
+}
+.stat{
+  background:var(--card);border-radius:12px;
+  padding:10px 4px;text-align:center;
+  border:2px solid var(--bd);cursor:pointer;
+  transition:transform .12s,border-color .12s,background .12s;
+  user-select:none;
+}
+.stat:active{transform:scale(.93)}
+/* active states — each colour */
+.stat.on-r{background:var(--rl);border-color:var(--r)}
+.stat.on-a{background:var(--al);border-color:var(--a)}
+.stat.on-g{background:var(--gl);border-color:var(--g)}
+.stat.on-b{background:var(--bl);border-color:var(--b)}
 .sn{font-size:24px;font-weight:800;line-height:1}
 .sl{font-size:10px;font-weight:700;color:var(--tx2);margin-top:3px;
   text-transform:uppercase;letter-spacing:.4px}
 .cr{color:var(--r)}.ca{color:var(--a)}.cg{color:var(--g)}.cb{color:var(--b)}
 
-/* ── SEARCH ── */
-#srchwrap{padding:8px 12px 0;flex-shrink:0}
-.sbox{display:flex;align-items:center;gap:8px;background:var(--card);
-  border-radius:11px;padding:11px 13px;border:1.5px solid var(--bd)}
-.sbox input{flex:1;font-size:15px;background:transparent;color:var(--tx);font-weight:500}
+/* ─── SEARCH ─── */
+#sw{padding:8px 12px 0;flex-shrink:0}
+.sbox{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border-radius:12px;
+  padding:11px 14px;border:1.5px solid var(--bd);
+}
+.sbox input{flex:1;font-size:15px;color:var(--tx);font-weight:500}
 .sbox input::placeholder{color:var(--tx3)}
 
-/* ── TABS ── */
-#tabwrap{padding:8px 12px 0;flex-shrink:0}
-.tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;padding-bottom:2px}
+/* ─── TABS ─── */
+#tw{padding:8px 12px 0;flex-shrink:0}
+.tabs{
+  display:flex;gap:6px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;
+}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex-shrink:0;padding:8px 14px;border-radius:10px;font-size:13px;font-weight:700;
-  background:var(--card);color:var(--tx2);border:1.5px solid var(--bd);white-space:nowrap;
-  cursor:pointer;transition:all .15s}
+.tab{
+  flex-shrink:0;padding:8px 15px;border-radius:10px;
+  font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer;
+  background:var(--card);color:var(--tx2);border:1.5px solid var(--bd);
+  transition:all .12s;
+}
 .tab.active{background:var(--tx);color:#fff;border-color:var(--tx)}
-/* stat-driven tab highlights */
-.tab.hl-ov{background:var(--rl);color:var(--r);border-color:var(--r)}
-.tab.hl-td{background:var(--al);color:var(--a);border-color:var(--a)}
-.tab.hl-up{background:var(--gl);color:var(--gd);border-color:var(--g)}
-.tab.hl-al{background:var(--bl);color:var(--b);border-color:var(--b)}
-.tbdg{display:inline-block;background:var(--r);color:#fff;border-radius:20px;
-  font-size:10px;font-weight:800;padding:1px 6px;margin-left:4px;vertical-align:middle}
+/* stat-driven highlights */
+.tab.hl-r{background:var(--rl);color:var(--r);border-color:var(--r)}
+.tab.hl-a{background:var(--al);color:var(--a);border-color:var(--a)}
+.tab.hl-g{background:var(--gl);color:var(--gd);border-color:var(--g)}
+.tab.hl-b{background:var(--bl);color:var(--b);border-color:var(--b)}
+.tbdg{
+  display:inline-block;background:rgba(0,0,0,.18);color:#fff;
+  border-radius:20px;font-size:10px;font-weight:800;
+  padding:1px 6px;margin-left:4px;vertical-align:middle;
+}
 .tab.active .tbdg{background:rgba(255,255,255,.25)}
+.tab.hl-r .tbdg{background:var(--r);color:#fff}
+.tab.hl-a .tbdg{background:var(--a);color:#fff}
+.tab.hl-g .tbdg{background:var(--gd);color:#fff}
+.tab.hl-b .tbdg{background:var(--b);color:#fff}
 
-/* ── LIST ── */
+/* ─── LIST ─── */
 #list{
   flex:1;min-height:0;
   overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:10px 12px 80px;
+  padding:10px 12px calc(72px + var(--sb));
   display:flex;flex-direction:column;gap:10px;
 }
 #list::-webkit-scrollbar{display:none}
 
-/* ── BOTTOM NAV (fixed) ── */
+/* ─── BOTTOM NAV ─── */
 #bnav{
   position:fixed;bottom:0;left:50%;transform:translateX(-50%);
   width:100%;max-width:480px;
   display:flex;background:#fff;border-top:1.5px solid var(--bd);
-  padding:6px 0 calc(6px + var(--safe-b));z-index:200;
+  padding:6px 0 calc(6px + var(--sb));z-index:100;
 }
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+.ni{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
   cursor:pointer;padding:4px 0;color:var(--tx2);font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.3px}
+  text-transform:uppercase;letter-spacing:.3px;
+}
 .ni.active{color:var(--g)}
 .ni-ico{font-size:22px;line-height:1}
 
-/* ── CARDS ── */
+/* ─── CARDS ─── */
 .card{background:var(--card);border-radius:16px;border:1.5px solid var(--bd)}
 .card.overdue {border-left:4px solid var(--r)}
 .card.today   {border-left:4px solid var(--a)}
 .card.upcoming{border-left:4px solid var(--g)}
 .card.new     {border-left:4px solid var(--b)}
-.card.done-c  {border-left:4px solid #ccc;opacity:.75}
+.card.done-c  {border-left:4px solid #ccc;opacity:.7}
 
-.ch{padding:13px 13px 8px;display:flex;align-items:flex-start;gap:11px}
+.ch{padding:13px 13px 8px;display:flex;align-items:flex-start;gap:12px}
 .av{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;
   justify-content:center;font-size:16px;font-weight:800;flex-shrink:0}
 .av-g{background:var(--gl);color:var(--gd)}
@@ -123,89 +156,115 @@ button,input,select{font-family:inherit;border:none;outline:none;background:none
 .av-a{background:var(--al);color:var(--a)}
 .av-r{background:var(--rl);color:var(--r)}
 .av-p{background:var(--pl);color:var(--p)}
+
 .ci{flex:1;min-width:0}
 .cn{font-size:17px;font-weight:800;color:var(--tx);line-height:1.2}
 .cm{font-size:13px;color:var(--tx2);font-weight:600;margin-top:3px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cd{font-size:12px;color:var(--tx3);margin-top:3px;font-weight:500}
+
 .bdg{font-size:11px;font-weight:800;padding:4px 9px;border-radius:9px;
   white-space:nowrap;flex-shrink:0;align-self:flex-start}
-.br{background:var(--rl);color:var(--r)}
-.ba{background:var(--al);color:var(--a)}
-.bg{background:var(--gl);color:var(--gd)}
-.bb{background:var(--bl);color:var(--b)}
-.bx{background:#EEEDEA;color:#888}
+.bdg-r{background:var(--rl);color:var(--r)}
+.bdg-a{background:var(--al);color:var(--a)}
+.bdg-g{background:var(--gl);color:var(--gd)}
+.bdg-b{background:var(--bl);color:var(--b)}
+.bdg-x{background:#EEEDEA;color:#777}
 
 .cbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px 10px}
-.cbtn{padding:14px 8px;border-radius:11px;font-size:15px;font-weight:800;
+.cbtn{padding:14px 8px;border-radius:12px;font-size:15px;font-weight:800;
   display:flex;align-items:center;justify-content:center;gap:6px}
-.cbtn:active{opacity:.7}
+.cbtn:active{opacity:.65}
 .bwa{background:var(--gl);color:var(--gd)}
 .bcl{background:var(--bl);color:var(--b)}
-.ubtn{display:block;width:calc(100% - 22px);margin:0 11px 11px;
-  background:var(--g);color:#fff;border-radius:11px;
-  padding:13px;font-size:15px;font-weight:800;text-align:center}
+
+.ubtn{
+  display:block;width:calc(100% - 22px);margin:0 11px 12px;
+  background:var(--g);color:#fff;border-radius:12px;
+  padding:13px;font-size:15px;font-weight:800;text-align:center;
+}
 .ubtn:active{background:var(--gd)}
 
-/* ── EMPTY / LOADING ── */
+/* ─── EMPTY / LOADING ─── */
 .empty{display:flex;flex-direction:column;align-items:center;
   justify-content:center;padding:60px 24px;text-align:center;gap:10px}
-.ei{font-size:52px;opacity:.25}.et{font-size:19px;font-weight:800}
-.es{font-size:14px;color:var(--tx2);line-height:1.5;max-width:250px;font-weight:500}
+.ei{font-size:52px;opacity:.2}
+.et{font-size:19px;font-weight:800}
+.es{font-size:14px;color:var(--tx2);line-height:1.5;max-width:260px;font-weight:500}
 .loading{display:flex;flex-direction:column;align-items:center;
   justify-content:center;padding:60px 24px;gap:14px;color:var(--tx2)}
 .spin{width:32px;height:32px;border:3px solid var(--bd);
   border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* ── UPDATE MODAL ── */
+/* ─── UPDATE MODAL ─── */
 .mov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;
-  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
+  display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .2s}
 .mov.open{opacity:1;pointer-events:all}
-.modal{background:#fff;border-radius:22px 22px 0 0;width:100%;height:88dvh;
+.modal{
+  background:#fff;border-radius:22px 22px 0 0;
+  width:100%;height:88dvh;
   display:flex;flex-direction:column;
-  transform:translateY(100%);transition:transform .27s cubic-bezier(.32,.72,0,1)}
+  transform:translateY(100%);
+  transition:transform .27s cubic-bezier(.32,.72,0,1);
+}
 .mov.open .modal{transform:translateY(0)}
-.mhd{padding:14px 16px 12px;border-bottom:1.5px solid var(--bd);
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mhd{
+  padding:14px 16px 12px;border-bottom:1.5px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
 .mnm{font-size:17px;font-weight:800;color:var(--tx)}
 .msb{font-size:13px;color:var(--tx2);margin-top:2px;font-weight:500}
 .mx{background:var(--bg);border-radius:9px;padding:7px 13px;
   font-size:13px;font-weight:700;color:var(--tx2);border:1.5px solid var(--bd)}
 .mx:active{opacity:.7}
 .mbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:14px 16px calc(20px + var(--safe-b));
+  padding:14px 16px calc(24px + var(--sb));
   display:flex;flex-direction:column;gap:12px}
 .mbody::-webkit-scrollbar{display:none}
-.sec{font-size:11px;font-weight:800;color:var(--tx3);
+.msec{font-size:11px;font-weight:800;color:var(--tx3);
   text-transform:uppercase;letter-spacing:.6px;padding-top:4px}
 .mf{display:flex;flex-direction:column;gap:5px}
 .mf label{font-size:15px;font-weight:700;color:var(--tx)}
-.mf input,.mf select{width:100%;padding:14px 13px;border-radius:11px;
+.mf input,.mf select{
+  width:100%;padding:14px 13px;border-radius:11px;
   border:1.5px solid var(--bd);background:var(--bg);
-  font-size:16px;font-weight:500;color:var(--tx);-webkit-appearance:none}
+  font-size:16px;font-weight:500;color:var(--tx);-webkit-appearance:none;
+}
 .mf select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 13px center;padding-right:38px}
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:40px;
+}
 .mf input:focus,.mf select:focus{border-color:var(--g);background:#fff}
-.drow{display:flex;align-items:center;gap:13px;background:var(--gl);
-  border-radius:12px;padding:16px 14px;border:2px solid rgba(15,165,115,.25)}
+.drow{
+  display:flex;align-items:center;gap:13px;
+  background:var(--gl);border-radius:12px;
+  padding:16px 14px;border:2px solid rgba(15,165,115,.3);
+}
 .drow input[type=checkbox]{width:26px;height:26px;accent-color:var(--g);flex-shrink:0}
-.drow label{font-size:16px;font-weight:700;color:var(--gd);cursor:pointer}
-.msavebtn{width:100%;background:var(--tx);color:#fff;border-radius:12px;
-  padding:17px;font-size:17px;font-weight:800;margin-top:4px}
-.msavebtn:active{opacity:.85}
-.msavebtn:disabled{opacity:.4}
-.msavedtxt{text-align:center;color:var(--g);font-size:14px;font-weight:800;padding:4px 0}
+.drow label{font-size:16px;font-weight:700;color:var(--gd);cursor:pointer;line-height:1.4}
+.msave{
+  width:100%;background:var(--tx);color:#fff;
+  border-radius:12px;padding:17px;
+  font-size:17px;font-weight:800;margin-top:4px;
+}
+.msave:active{opacity:.8}
+.msave:disabled{opacity:.4}
+.msaved{text-align:center;color:var(--g);font-size:14px;font-weight:800;padding:4px 0}
 
-/* ── ADD LEAD SHEET ── */
+/* ─── ADD LEAD SHEET ─── */
 .aov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;
-  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
+  display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .2s}
 .aov.open{opacity:1;pointer-events:all}
-.ash{background:#fff;border-radius:22px 22px 0 0;width:100%;
-  max-height:93dvh;overflow-y:auto;
-  padding:0 0 calc(20px + var(--safe-b));
-  transform:translateY(100%);transition:transform .27s cubic-bezier(.32,.72,0,1)}
+.ash{
+  background:#fff;border-radius:22px 22px 0 0;
+  width:100%;max-height:93dvh;overflow-y:auto;
+  padding:0 0 calc(20px + var(--sb));
+  transform:translateY(100%);
+  transition:transform .27s cubic-bezier(.32,.72,0,1);
+}
 .aov.open .ash{transform:translateY(0)}
 .ashw{padding:14px 0 6px;display:flex;justify-content:center}
 .ashh{width:38px;height:5px;background:#DDD;border-radius:3px}
@@ -214,146 +273,194 @@ button,input,select{font-family:inherit;border:none;outline:none;background:none
 .ashr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .af{display:flex;flex-direction:column;gap:5px}
 .af label{font-size:14px;font-weight:700;color:var(--tx)}
-.af input,.af select{width:100%;padding:13px 12px;border-radius:10px;
+.af input,.af select{
+  width:100%;padding:13px 12px;border-radius:11px;
   border:1.5px solid var(--bd);background:var(--bg);
-  font-size:15px;font-weight:500;color:var(--tx);-webkit-appearance:none}
+  font-size:15px;font-weight:500;color:var(--tx);-webkit-appearance:none;
+}
 .af select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;
+}
 .af input:focus,.af select:focus{border-color:var(--g);background:#fff}
-.ashok{margin:14px 18px 0;width:calc(100% - 36px);background:var(--g);color:#fff;
-  border-radius:11px;padding:17px;font-size:17px;font-weight:800}
+.ashok{
+  margin:14px 18px 0;width:calc(100% - 36px);
+  background:var(--g);color:#fff;border-radius:12px;
+  padding:17px;font-size:17px;font-weight:800;
+}
 .ashok:active{background:var(--gd)}
-.ashno{margin:10px 18px 0;width:calc(100% - 36px);background:var(--bg);
-  color:var(--tx2);border-radius:11px;padding:13px;font-size:15px;
-  font-weight:700;border:1.5px solid var(--bd)}
+.ashno{
+  margin:10px 18px 0;width:calc(100% - 36px);
+  background:var(--bg);color:var(--tx2);border-radius:12px;
+  padding:13px;font-size:15px;font-weight:700;border:1.5px solid var(--bd);
+}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:80px;left:50%;
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:calc(72px + var(--sb));left:50%;
   transform:translateX(-50%) translateY(16px);
-  background:#111;color:#fff;padding:11px 20px;border-radius:50px;
-  font-size:14px;font-weight:700;z-index:500;opacity:0;
-  transition:all .2s;pointer-events:none;white-space:nowrap}
+  background:#111;color:#fff;padding:11px 20px;
+  border-radius:50px;font-size:14px;font-weight:700;
+  z-index:600;opacity:0;transition:all .2s;
+  pointer-events:none;white-space:nowrap;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- TOP BAR -->
   <div id="topbar">
     <div class="tr">
-      <div><div class="tname">LeadPilot</div><div class="tdate" id="tdate"></div></div>
+      <div>
+        <div class="tname">LeadPilot</div>
+        <div class="tdate" id="tdate"></div>
+      </div>
       <button class="add-btn" onclick="openAdd()">＋ Add Lead</button>
     </div>
   </div>
 
-  <!-- STAT CARDS — each one clickable, switches tab -->
+  <!-- STAT CARDS — tap to jump to tab -->
   <div id="stats">
-    <div class="stat" id="stat-ov" onclick="statClick('overdue','stat-ov','active-ov','hl-ov')">
-      <div class="sn cr" id="s-ov">—</div><div class="sl">Overdue</div>
+    <div class="stat" id="sc-ov" onclick="statJump('overdue','sc-ov','on-r','hl-r')">
+      <div class="sn cr" id="s-ov">—</div>
+      <div class="sl">Overdue</div>
     </div>
-    <div class="stat" id="stat-td" onclick="statClick('today','stat-td','active-td','hl-td')">
-      <div class="sn ca" id="s-td">—</div><div class="sl">Today</div>
+    <div class="stat" id="sc-td" onclick="statJump('today','sc-td','on-a','hl-a')">
+      <div class="sn ca" id="s-td">—</div>
+      <div class="sl">Today</div>
     </div>
-    <div class="stat" id="stat-up" onclick="statClick('upcoming','stat-up','active-up','hl-up')">
-      <div class="sn cg" id="s-up">—</div><div class="sl">Soon</div>
+    <div class="stat" id="sc-up" onclick="statJump('upcoming','sc-up','on-g','hl-g')">
+      <div class="sn cg" id="s-up">—</div>
+      <div class="sl">Soon</div>
     </div>
-    <div class="stat" id="stat-al" onclick="statClick('all','stat-al','active-al','hl-al')">
-      <div class="sn cb" id="s-al">—</div><div class="sl">Total</div>
+    <div class="stat" id="sc-al" onclick="statJump('all','sc-al','on-b','hl-b')">
+      <div class="sn cb" id="s-al">—</div>
+      <div class="sl">Total</div>
     </div>
   </div>
 
-  <div id="srchwrap">
+  <!-- SEARCH -->
+  <div id="sw">
     <div class="sbox">
       <span style="font-size:17px">🔍</span>
       <input id="search" placeholder="Search name, phone, interest…" oninput="render()"/>
     </div>
   </div>
 
-  <div id="tabwrap">
-    <div class="tabs">
+  <!-- TABS -->
+  <div id="tw">
+    <div class="tabs" id="tabs">
       <div class="tab active" data-tab="today"    onclick="setTab(this)">Today    <span class="tbdg" id="tb-t">0</span></div>
-      <div class="tab"        data-tab="new"       onclick="setTab(this)">New 🔵   <span class="tbdg" id="tb-n">0</span></div>
+      <div class="tab"        data-tab="new"       onclick="setTab(this)">New      <span class="tbdg" id="tb-n">0</span></div>
       <div class="tab"        data-tab="overdue"   onclick="setTab(this)">Overdue  <span class="tbdg" id="tb-o">0</span></div>
+      <div class="tab"        data-tab="upcoming"  onclick="setTab(this)">Upcoming <span class="tbdg" id="tb-u">0</span></div>
+      <div class="tab"        data-tab="done"      onclick="setTab(this)">Done     <span class="tbdg" id="tb-d">0</span></div>
       <div class="tab"        data-tab="all"       onclick="setTab(this)">All Leads</div>
-      <div class="tab"        data-tab="upcoming"  onclick="setTab(this)">Upcoming</div>
-      <div class="tab"        data-tab="done"      onclick="setTab(this)">Done</div>
     </div>
   </div>
 
+  <!-- LEAD LIST -->
   <div id="list"></div>
 
+  <!-- BOTTOM NAV -->
   <div id="bnav">
-    <div class="ni active" onclick="setTabKey('today')"> <div class="ni-ico">📋</div>Today</div>
-    <div class="ni"        onclick="setTabKey('all')">   <div class="ni-ico">👥</div>All</div>
-    <div class="ni"        onclick="openAdd()">          <div class="ni-ico">➕</div>Add</div>
-    <div class="ni"        onclick="load()">             <div class="ni-ico">🔄</div>Refresh</div>
-    <div class="ni"        onclick="setTabKey('done')">  <div class="ni-ico">✅</div>Done</div>
+    <div class="ni active" id="ni-today"    onclick="setTabKey('today')">   <div class="ni-ico">📋</div>Today</div>
+    <div class="ni"        id="ni-new"      onclick="setTabKey('new')">     <div class="ni-ico">🔵</div>New</div>
+    <div class="ni"                         onclick="openAdd()">            <div class="ni-ico">➕</div>Add</div>
+    <div class="ni"                         onclick="load()">               <div class="ni-ico">🔄</div>Refresh</div>
+    <div class="ni"        id="ni-done"     onclick="setTabKey('done')">    <div class="ni-ico">✅</div>Done</div>
   </div>
 </div>
 
-<!-- UPDATE MODAL -->
+<!-- ═══ UPDATE MODAL ═══ -->
 <div class="mov" id="mov" onclick="movTap(event)">
   <div class="modal">
     <div class="mhd">
-      <div><div class="mnm" id="m-nm">Update Lead</div><div class="msb" id="m-sb"></div></div>
+      <div>
+        <div class="mnm" id="m-nm">Update Lead</div>
+        <div class="msb" id="m-sb"></div>
+      </div>
       <button class="mx" onclick="closeModal()">✕ Close</button>
     </div>
     <div class="mbody">
-      <div class="sec">📞 After call update</div>
+      <div class="msec">📞 After call</div>
+
       <div class="mf"><label>Lead Status</label>
-        <select id="m-st"><option value="">Select…</option>
+        <select id="m-st">
+          <option value="">Select…</option>
           <option>New</option><option>Interested</option>
           <option>Site Visit Scheduled</option><option>Site Visit Done</option>
           <option>Negotiation</option><option>Converted</option>
           <option>Lost</option><option>On Hold</option><option>Follow Up</option>
         </select></div>
-      <div class="mf"><label>Call Result ★ Required before Done</label>
-        <select id="m-res"><option value="">Select result…</option>
+
+      <div class="mf"><label>Call Result ★ Required before marking Done</label>
+        <select id="m-res">
+          <option value="">Select result…</option>
           <option>Interested</option><option>Not Interested</option>
           <option>Call Back Later</option><option>No Answer</option>
           <option>Wrong Number</option><option>Site Visit Booked</option>
           <option>Converted</option><option>Lost</option>
         </select></div>
+
       <div class="mf"><label>Next Follow-up Date</label>
         <input type="date" id="m-dt"/></div>
+
       <div class="mf"><label>Priority</label>
-        <select id="m-pr"><option value="">Select…</option>
+        <select id="m-pr">
+          <option value="">Select…</option>
           <option>🔥 Hot</option><option>♨️ Warm</option><option>❄️ Cold</option>
         </select></div>
-      <div class="sec">💰 Deal details</div>
+
+      <div class="msec">💰 Deal</div>
+
       <div class="mf"><label>Property Value (₹)</label>
         <input id="m-pv" placeholder="e.g. 75,00,000"/></div>
+
       <div class="mf"><label>Commission %</label>
         <input id="m-cm" placeholder="e.g. 2"/></div>
+
       <div class="mf"><label>Agent Name</label>
         <input id="m-ag" placeholder="Your name"/></div>
-      <div class="sec">✅ Mark complete</div>
+
+      <div class="msec">✅ Complete</div>
+
       <div class="drow">
         <input type="checkbox" id="m-done"/>
-        <label for="m-done">Call Done ✓<br/>
-          <span style="font-size:13px;font-weight:500;color:var(--gd)">Select result above first</span>
+        <label for="m-done">
+          Mark Call as Done ✓<br/>
+          <span style="font-size:13px;font-weight:500">Select call result above first</span>
         </label>
       </div>
-      <button class="msavebtn" id="msavebtn" onclick="saveModal()">💾 Save Update</button>
-      <div class="msavedtxt" id="msavedtxt" style="display:none">✓ Saved successfully!</div>
+
+      <button class="msave" id="msave" onclick="saveModal()">💾 Save Update</button>
+      <div class="msaved" id="msaved" style="display:none">✓ Saved successfully!</div>
     </div>
   </div>
 </div>
 
-<!-- ADD LEAD -->
+<!-- ═══ ADD LEAD ═══ -->
 <div class="aov" id="aov" onclick="aovTap(event)">
   <div class="ash">
     <div class="ashw"><div class="ashh"></div></div>
     <div class="asht">Add New Lead</div>
     <div class="ashb">
-      <div class="af"><label>Full Name ★</label><input id="fn" placeholder="Client full name"/></div>
+      <div class="af"><label>Full Name ★</label>
+        <input id="fn" placeholder="Client full name"/></div>
       <div class="ashr">
-        <div class="af"><label>Phone ★</label><input id="fp" type="tel" placeholder="+91 98765"/></div>
-        <div class="af"><label>WhatsApp</label><input id="fw" type="tel" placeholder="If different"/></div>
+        <div class="af"><label>Phone ★</label>
+          <input id="fp" type="tel" placeholder="+91 98765"/></div>
+        <div class="af"><label>WhatsApp</label>
+          <input id="fw" type="tel" placeholder="If different"/></div>
       </div>
-      <div class="af"><label>Email</label><input id="fe" type="email" placeholder="email@example.com"/></div>
+      <div class="af"><label>Email</label>
+        <input id="fe" type="email" placeholder="email@example.com"/></div>
       <div class="af"><label>Interested In</label>
-        <select id="fi"><option value="">Select…</option>
+        <select id="fi">
+          <option value="">Select…</option>
           <option>2BHK Apartment</option><option>3BHK Apartment</option>
           <option>4BHK Apartment</option><option>Villa</option>
           <option>Plot</option><option>Commercial</option>
@@ -361,24 +468,29 @@ button,input,select{font-family:inherit;border:none;outline:none;background:none
         </select></div>
       <div class="ashr">
         <div class="af"><label>Budget</label>
-          <select id="fb"><option value="">Budget…</option>
+          <select id="fb">
+            <option value="">Budget…</option>
             <option>Below ₹20L</option><option>₹20–40L</option>
             <option>₹40–60L</option><option>₹60–80L</option>
             <option>₹80L–1Cr</option><option>₹1–1.5Cr</option>
             <option>Above ₹1.5Cr</option>
           </select></div>
         <div class="af"><label>Source</label>
-          <select id="fs"><option value="">Source…</option>
+          <select id="fs">
+            <option value="">Source…</option>
             <option>Facebook Ad</option><option>Instagram Ad</option>
             <option>Google Ad</option><option>WhatsApp</option>
             <option>Referral</option><option>Walk-in</option><option>Other</option>
           </select></div>
       </div>
-      <div class="af"><label>Preferred Location</label><input id="fl" placeholder="Area / locality"/></div>
-      <div class="af"><label>Follow-up Date</label><input id="fd" type="date"/></div>
-      <div class="af"><label>Agent Name</label><input id="fan" placeholder="Your name"/></div>
+      <div class="af"><label>Preferred Location</label>
+        <input id="fl" placeholder="Area / locality"/></div>
+      <div class="af"><label>Follow-up Date</label>
+        <input id="fd" type="date"/></div>
+      <div class="af"><label>Agent Name</label>
+        <input id="fan" placeholder="Your name"/></div>
     </div>
-    <button class="ashok" onclick="submitLead()">💾 Save Lead</button>
+    <button class="ashok" id="ashok" onclick="submitLead()">💾 Save Lead</button>
     <button class="ashno" onclick="closeAdd()">Cancel</button>
   </div>
 </div>
@@ -386,369 +498,570 @@ button,input,select{font-family:inherit;border:none;outline:none;background:none
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════
-// ⚙️  PASTE YOUR API URL HERE
-// ════════════════════════════════
+// ═══════════════════════════════════════════
+// ⚙️  PASTE YOUR APPS SCRIPT WEB APP URL HERE
+// ═══════════════════════════════════════════
 const API = "https://script.google.com/macros/s/AKfycbw-CHiRS8-T3yvfqSNGfTXUObycGBdTtwVsCJSs5tHtj6MsAtzwuoZom4cox2XUbCU1dA/exec";
 
-let leads=[], curTab="today", activeRI=null;
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let leads = [];
+let curTab = "today";
+let activeRI = null;
 
-function localToday(){
-  const d=new Date();
-  return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+// Get today as YYYY-MM-DD in local time (fixes India UTC+5:30 off-by-one)
+function localToday() {
+  const d = new Date();
+  const y  = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, "0");
+  const dy = String(d.getDate()).padStart(2, "0");
+  return `${y}-${mo}-${dy}`;
 }
-const TODAY=localToday();
+const TODAY = localToday();
 
-document.addEventListener("DOMContentLoaded",()=>{
-  const d=new Date();
-  document.getElementById("tdate").textContent=
-    d.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-  document.getElementById("fd").value=TODAY;
-  document.getElementById("m-dt").value=TODAY;
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  const d = new Date();
+  document.getElementById("tdate").textContent =
+    d.toLocaleDateString("en-IN", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+  document.getElementById("fd").value  = TODAY;
+  document.getElementById("m-dt").value = TODAY;
   load();
 });
 
-// ════════════════════════════════
-// LOAD
-// ════════════════════════════════
-async function load(){
-  document.getElementById("list").innerHTML=
+// ═══════════════════════════════════════════
+// LOAD LEADS FROM SHEET
+// ═══════════════════════════════════════════
+async function load() {
+  document.getElementById("list").innerHTML =
     `<div class="loading"><div class="spin"></div>Loading your leads…</div>`;
-  try{
-    const url=API+(API.includes("?")?"&":"?")+"action=getLeads&t="+Date.now();
-    const r=await fetch(url,{redirect:"follow"});
-    const txt=await r.text();
-    leads=JSON.parse(txt).map(norm);
+  try {
+    const url = API + (API.includes("?") ? "&" : "?") + "action=getLeads&t=" + Date.now();
+    const res = await fetch(url, { redirect: "follow" });
+    const txt = await res.text();
+    leads = JSON.parse(txt).map(norm);
     render();
-  }catch(e){
-    document.getElementById("list").innerHTML=
-      `<div class="empty"><div class="ei">⚠️</div><div class="et">Cannot load leads</div>
-       <div class="es">Check your API URL.<br/><small>${e.message}</small></div></div>`;
+  } catch(e) {
+    document.getElementById("list").innerHTML =
+      `<div class="empty">
+        <div class="ei">⚠️</div>
+        <div class="et">Cannot load leads</div>
+        <div class="es">Check your API URL in the HTML file.<br/><small>${e.message}</small></div>
+       </div>`;
   }
 }
 
-function norm(r){
-  const fd=fixDate(r.followDate);
-  let st="new";
-  if(fd){if(fd<TODAY)st="overdue";else if(fd===TODAY)st="today";else st="upcoming";}
-  const done=r.callDone===true||String(r.callDone).toLowerCase()==="true";
-  const res=S(r.callResult);
-  const isDone=done&&res.trim()!=="";
-  const ph=S(r.phone).replace(/\D/g,"");
-  const wa=S(r.whatsapp).replace(/\D/g,"")||ph;
-  return{ri:r.rowIndex,name:S(r.name)||"—",phone:ph,whatsapp:wa,
-    email:S(r.email),interest:S(r.interest),budget:S(r.budget),
-    source:S(r.source),location:S(r.location),remarks:S(r.remarks),
-    leadStatus:S(r.leadStatus),followDate:fd,callDone:done,callResult:res,
-    propValue:S(r.propValue),commission:S(r.commission),priority:S(r.priority),
-    agentName:S(r.agentName),status:st,isDone,
-    initials:INI(S(r.name)),color:COL(S(r.name))};
+// ═══════════════════════════════════════════
+// NORMALISE — THE CORRECT COMPLETE LOGIC
+//
+// STATUS rules (based on follow-up date only):
+//   No date set          → "new"
+//   Date is in the past  → "overdue"
+//   Date is today        → "today"
+//   Date is in future    → "upcoming"
+//
+// isDone rules:
+//   callDone checkbox = true  AND  callResult is not empty  → isDone = true
+//   Anything else → isDone = false
+//
+// TAB MEMBERSHIP:
+//   Today tab    → (new OR today OR overdue) AND NOT isDone
+//   New tab      → new AND NOT isDone
+//   Overdue tab  → overdue AND NOT isDone
+//   Upcoming tab → upcoming AND NOT isDone
+//   Done tab     → isDone = true  (any status)
+//   All Leads    → every lead
+// ═══════════════════════════════════════════
+function norm(r) {
+  const fd = toDateStr(r.followDate);
+
+  // Determine status from date
+  let status = "new";
+  if (fd) {
+    if      (fd < TODAY)  status = "overdue";
+    else if (fd === TODAY) status = "today";
+    else                   status = "upcoming";
+  }
+
+  const callDone   = r.callDone === true || String(r.callDone).toLowerCase() === "true";
+  const callResult = xs(r.callResult).trim();
+
+  // isDone requires BOTH checkbox AND a result selected
+  const isDone = callDone && callResult !== "";
+
+  const ph = xs(r.phone).replace(/\D/g, "");
+  const wa = xs(r.whatsapp).replace(/\D/g, "") || ph;
+
+  return {
+    ri         : r.rowIndex,
+    name       : xs(r.name) || "—",
+    phone      : ph,
+    whatsapp   : wa,
+    email      : xs(r.email),
+    interest   : xs(r.interest),
+    budget     : xs(r.budget),
+    source     : xs(r.source),
+    location   : xs(r.location),
+    remarks    : xs(r.remarks),
+    leadStatus : xs(r.leadStatus),
+    followDate : fd,
+    callDone,
+    callResult,
+    propValue  : xs(r.propValue),
+    commission : xs(r.commission),
+    priority   : xs(r.priority),
+    agentName  : xs(r.agentName),
+    status,
+    isDone,
+    initials   : INI(xs(r.name)),
+    color      : COL(xs(r.name)),
+  };
 }
 
-function fixDate(v){
-  if(!v)return"";
-  if(typeof v==="string"&&/^\d{4}-\d{2}-\d{2}/.test(v))return v.slice(0,10);
-  const d=new Date(v);if(isNaN(d))return"";
-  return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+// Convert any date value to YYYY-MM-DD in local time
+function toDateStr(v) {
+  if (!v) return "";
+  if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
+  const d = new Date(v);
+  if (isNaN(d)) return "";
+  const y  = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, "0");
+  const dy = String(d.getDate()).padStart(2, "0");
+  return `${y}-${mo}-${dy}`;
 }
 
-// ════════════════════════════════
+// ═══════════════════════════════════════════
+// FILTER — each tab shows exactly the right leads
+// ═══════════════════════════════════════════
+function filt(t) {
+  switch(t) {
+    case "today":    return leads.filter(l => !l.isDone && (l.status === "today" || l.status === "overdue" || l.status === "new"));
+    case "new":      return leads.filter(l => !l.isDone && l.status === "new");
+    case "overdue":  return leads.filter(l => !l.isDone && l.status === "overdue");
+    case "upcoming": return leads.filter(l => !l.isDone && l.status === "upcoming");
+    case "done":     return leads.filter(l =>  l.isDone);
+    default:         return leads; // all
+  }
+}
+
+// ═══════════════════════════════════════════
+// STATS — correct counts for each stat card
+// ═══════════════════════════════════════════
+function doStats() {
+  const ov = leads.filter(l => !l.isDone && l.status === "overdue").length;
+  const td = leads.filter(l => !l.isDone && l.status === "today").length;
+  const nw = leads.filter(l => !l.isDone && l.status === "new").length;
+  const up = leads.filter(l => !l.isDone && l.status === "upcoming").length;
+  const dn = leads.filter(l =>  l.isDone).length;
+
+  setText("s-ov", ov);
+  setText("s-td", td + nw + ov);  // Today card = all needing action
+  setText("s-up", up);
+  setText("s-al", leads.length);
+
+  setText("tb-t", td + nw + ov);
+  setText("tb-n", nw);
+  setText("tb-o", ov);
+  setText("tb-u", up);
+  setText("tb-d", dn);
+}
+
+// ═══════════════════════════════════════════
 // RENDER
-// ════════════════════════════════
-function render(){
+// ═══════════════════════════════════════════
+function render() {
   doStats();
-  const q=(document.getElementById("search").value||"").toLowerCase();
-  const fl=filt(curTab).filter(l=>
-    !q||l.name.toLowerCase().includes(q)||l.phone.includes(q)||
-    l.interest.toLowerCase().includes(q)||l.location.toLowerCase().includes(q));
-  document.getElementById("list").innerHTML=fl.length?fl.map(cardHTML).join(""):emptyHTML();
+  const q = (document.getElementById("search").value || "").toLowerCase();
+  const filtered = filt(curTab).filter(l =>
+    !q ||
+    l.name.toLowerCase().includes(q) ||
+    l.phone.includes(q) ||
+    l.interest.toLowerCase().includes(q) ||
+    l.location.toLowerCase().includes(q)
+  );
+  document.getElementById("list").innerHTML =
+    filtered.length ? filtered.map(cardHTML).join("") : emptyHTML();
 }
 
-function filt(t){
-  if(t==="today")   return leads.filter(l=>(l.status==="today"||l.status==="overdue"||l.status==="new")&&!l.isDone);
-  if(t==="new")     return leads.filter(l=>l.status==="new"&&!l.isDone);
-  if(t==="overdue") return leads.filter(l=>l.status==="overdue"&&!l.isDone);
-  if(t==="upcoming")return leads.filter(l=>l.status==="upcoming"&&!l.isDone);
-  if(t==="done")    return leads.filter(l=>l.isDone);
-  return leads;
-}
+// ═══════════════════════════════════════════
+// CARD HTML
+// ═══════════════════════════════════════════
+function cardHTML(l) {
+  const ph  = l.phone ? "+" + l.phone : "—";
+  const fd  = l.followDate ? fmtDate(l.followDate) : "No date — tap Update to set";
+  const sub = [l.interest, l.budget].filter(Boolean).join(" · ") || "No details";
+  const wa  = l.whatsapp || l.phone;
 
-function doStats(){
-  const ov=leads.filter(l=>l.status==="overdue"&&!l.isDone).length;
-  const td=leads.filter(l=>l.status==="today"&&!l.isDone).length;
-  const nw=leads.filter(l=>l.status==="new"&&!l.isDone).length;
-  const up=leads.filter(l=>l.status==="upcoming"&&!l.isDone).length;
-  T("s-ov",ov);T("s-td",td+nw);T("s-up",up);T("s-al",leads.length);
-  T("tb-t",td+ov+nw);T("tb-o",ov);T("tb-n",nw);
-}
+  const bdg = l.isDone
+    ? `<span class="bdg bdg-x">✓ Done</span>`
+    : l.status === "overdue"  ? `<span class="bdg bdg-r">🔴 Overdue</span>`
+    : l.status === "today"    ? `<span class="bdg bdg-a">🟡 Today</span>`
+    : l.status === "upcoming" ? `<span class="bdg bdg-g">🟢 Soon</span>`
+    :                           `<span class="bdg bdg-b">🔵 New</span>`;
 
-function cardHTML(l){
-  const ph=l.phone?"+"+l.phone:"—";
-  const fd=l.followDate?fmtD(l.followDate):"No date set";
-  const sub=[l.interest,l.budget].filter(Boolean).join(" · ")||"No details";
-  const wa=l.whatsapp||l.phone;
-  const bdg=l.isDone?`<span class="bdg bx">✓ Done</span>`
-    :l.status==="overdue"?`<span class="bdg br">🔴 Overdue</span>`
-    :l.status==="today"?`<span class="bdg ba">🟡 Today</span>`
-    :l.status==="upcoming"?`<span class="bdg bg">🟢 Soon</span>`
-    :`<span class="bdg bb">🔵 New</span>`;
-  return`
-<div class="card ${l.isDone?"done-c":l.status}">
+  const cls = l.isDone ? "card done-c" : `card ${l.status}`;
+
+  return `
+<div class="${cls}">
   <div class="ch">
     <div class="av ${l.color}">${l.initials}</div>
     <div class="ci">
-      <div class="cn">${E(l.name)}</div>
-      <div class="cm">${E(sub)}</div>
+      <div class="cn">${xe(l.name)}</div>
+      <div class="cm">${xe(sub)}</div>
       <div class="cd">${ph} · 📅 ${fd}</div>
     </div>
     ${bdg}
   </div>
   <div class="cbtns">
-    <button class="cbtn bwa" onclick="WA('${wa}','${E(l.name)}')">📲 WhatsApp</button>
-    <button class="cbtn bcl" onclick="CALL('${l.phone}')">📞 Call</button>
+    <button class="cbtn bwa" onclick="doWA('${wa}','${xe(l.name)}')">📲 WhatsApp</button>
+    <button class="cbtn bcl" onclick="doCall('${l.phone}')">📞 Call</button>
   </div>
   <button class="ubtn" onclick="openModal(${l.ri})">✏️ Update After Call</button>
 </div>`;
 }
 
-function emptyHTML(){
-  const m={
-    today:  ["📋","Nothing due today","New, overdue & today's leads appear here."],
-    new:    ["🔵","No new leads","New form submissions appear here."],
-    overdue:["🎉","No overdue!","All on track."],
-    upcoming:["📅","No upcoming","Set follow-up dates to see leads here."],
-    done:   ["📁","No done yet","Mark calls done to see them here."],
-    all:    ["👥","No leads yet","Tap + Add Lead to start."],
-  }[curTab]||["👥","",""];
-  return`<div class="empty"><div class="ei">${m[0]}</div><div class="et">${m[1]}</div><div class="es">${m[2]}</div></div>`;
+function emptyHTML() {
+  const m = {
+    today:    ["📋", "Nothing due today",    "New enquiries, overdue & today's follow-ups appear here."],
+    new:      ["🔵", "No new leads",         "New form submissions appear here automatically."],
+    overdue:  ["🎉", "No overdue leads!",    "All follow-ups are on track."],
+    upcoming: ["📅", "No upcoming leads",    "After updating a lead with a future date it appears here."],
+    done:     ["✅", "No done leads yet",    "Leads where call is done show here."],
+    all:      ["👥", "No leads yet",         "Tap + Add Lead or wait for form submissions."],
+  }[curTab] || ["👥", "", ""];
+  return `<div class="empty">
+    <div class="ei">${m[0]}</div>
+    <div class="et">${m[1]}</div>
+    <div class="es">${m[2]}</div>
+  </div>`;
 }
 
-// ════════════════════════════════
+// ═══════════════════════════════════════════
 // STAT CARD CLICK
-// Clicking a stat card switches tab AND highlights it
-// ════════════════════════════════
-function statClick(tabKey, statId, statActiveClass, tabHlClass){
-  // Remove all active states from stat cards
-  ["stat-ov","stat-td","stat-up","stat-al"].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.className="stat"; // reset
+// Highlights stat card, highlights matching tab,
+// scrolls tab into view, switches list
+// ═══════════════════════════════════════════
+function statJump(tabKey, statId, statCls, tabCls) {
+  // Reset all stat cards
+  ["sc-ov","sc-td","sc-up","sc-al"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = "stat";
   });
-  // Remove highlight classes from all tabs
-  document.querySelectorAll(".tab").forEach(t=>{
-    t.classList.remove("active","hl-ov","hl-td","hl-up","hl-al");
-  });
+  // Reset all tabs
+  document.querySelectorAll(".tab").forEach(t => t.className = "tab");
 
-  // Highlight clicked stat card
-  const statEl=document.getElementById(statId);
-  if(statEl) statEl.classList.add(statActiveClass);
+  // Highlight this stat card
+  const sc = document.getElementById(statId);
+  if (sc) sc.classList.add(statCls);
 
-  // Find and highlight matching tab
-  const tabEl=document.querySelector(`[data-tab="${tabKey}"]`);
-  if(tabEl){
-    tabEl.classList.add(tabHlClass);
-    curTab=tabKey;
+  // Find + highlight + scroll to matching tab
+  const te = document.querySelector(`[data-tab="${tabKey}"]`);
+  if (te) {
+    te.classList.add(tabCls);
+    te.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    curTab = tabKey;
   }
 
+  // Update bottom nav
+  document.querySelectorAll(".ni").forEach(n => n.classList.remove("active"));
+
   render();
-  document.getElementById("list").scrollTop=0;
+  document.getElementById("list").scrollTop = 0;
 }
 
-// ════════════════════════════════
-// TAB SWITCHING
-// ════════════════════════════════
-function setTab(el){
-  curTab=el.dataset.tab;
-  // Clear stat highlights
-  ["stat-ov","stat-td","stat-up","stat-al"].forEach(id=>{
-    const s=document.getElementById(id);
-    if(s) s.className="stat";
+// ═══════════════════════════════════════════
+// TAB CLICK
+// ═══════════════════════════════════════════
+function setTab(el) {
+  curTab = el.dataset.tab;
+
+  // Clear stat card highlights
+  ["sc-ov","sc-td","sc-up","sc-al"].forEach(id => {
+    const e = document.getElementById(id);
+    if (e) e.className = "stat";
   });
+
   // Set tab active
-  document.querySelectorAll(".tab").forEach(t=>t.className="tab");
+  document.querySelectorAll(".tab").forEach(t => t.className = "tab");
   el.classList.add("active");
-  document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));
+
+  // Scroll tab into view in the strip
+  el.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+
+  // Update bottom nav
+  document.querySelectorAll(".ni").forEach(n => n.classList.remove("active"));
+  const ni = document.getElementById("ni-" + curTab);
+  if (ni) ni.classList.add("active");
+
   render();
-  document.getElementById("list").scrollTop=0;
+  document.getElementById("list").scrollTop = 0;
 }
 
-function setTabKey(k){
-  const el=document.querySelector(`[data-tab="${k}"]`);
-  if(el)setTab(el);
+function setTabKey(k) {
+  const el = document.querySelector(`[data-tab="${k}"]`);
+  if (el) setTab(el);
 }
 
-// ════════════════════════════════
-// MODAL — update lead
-// ════════════════════════════════
-function openModal(ri){
-  activeRI=ri;
-  const l=leads.find(x=>x.ri===ri);if(!l)return;
-  T2("m-nm",l.name);
-  T2("m-sb",[l.interest,l.budget].filter(Boolean).join(" · "));
-  V("m-st",l.leadStatus);V("m-res",l.callResult);
-  V("m-dt",l.followDate||TODAY);V("m-pr",l.priority);
-  V("m-pv",l.propValue);V("m-cm",l.commission);V("m-ag",l.agentName);
-  document.getElementById("m-done").checked=l.callDone;
-  document.getElementById("msavedtxt").style.display="none";
-  document.getElementById("msavebtn").disabled=false;
-  document.getElementById("msavebtn").textContent="💾 Save Update";
-  document.querySelector(".mbody").scrollTop=0;
+// ═══════════════════════════════════════════
+// MODAL — update lead after call
+// ═══════════════════════════════════════════
+function openModal(ri) {
+  activeRI = ri;
+  const l = leads.find(x => x.ri === ri);
+  if (!l) return;
+
+  document.getElementById("m-nm").textContent = l.name;
+  document.getElementById("m-sb").textContent = [l.interest, l.budget].filter(Boolean).join(" · ");
+  setVal("m-st",  l.leadStatus);
+  setVal("m-res", l.callResult);
+  setVal("m-dt",  l.followDate || TODAY);
+  setVal("m-pr",  l.priority);
+  setVal("m-pv",  l.propValue);
+  setVal("m-cm",  l.commission);
+  setVal("m-ag",  l.agentName);
+  document.getElementById("m-done").checked = l.callDone;
+  document.getElementById("msaved").style.display = "none";
+  document.getElementById("msave").disabled = false;
+  document.getElementById("msave").textContent = "💾 Save Update";
+  document.querySelector(".mbody").scrollTop = 0;
   document.getElementById("mov").classList.add("open");
 }
-function closeModal(){document.getElementById("mov").classList.remove("open");activeRI=null;}
-function movTap(e){if(e.target.id==="mov")closeModal();}
 
-async function saveModal(){
-  const ri=activeRI;if(!ri)return;
-  const callDone  =document.getElementById("m-done").checked;
-  const callResult=document.getElementById("m-res").value;
-  const followDate=document.getElementById("m-dt").value;
-  const leadStatus=document.getElementById("m-st").value;
-  const priority  =document.getElementById("m-pr").value;
-  const propValue =document.getElementById("m-pv").value;
-  const commission=document.getElementById("m-cm").value;
-  const agentName =document.getElementById("m-ag").value;
-
-  if(callDone&&!callResult){
-    toast("⚠️ Select Call Result first");
-    document.getElementById("m-done").checked=false;return;
-  }
-  const btn=document.getElementById("msavebtn");
-  btn.disabled=true;btn.textContent="Saving…";
-  try{
-    // Use regular fetch (no no-cors) so we get response back
-    const r=await fetch(API,{
-      method:"POST",
-      headers:{"Content-Type":"text/plain"},
-      body:JSON.stringify({action:"updateLead",rowIndex:ri,
-        callDone,callResult,followDate,leadStatus,priority,propValue,commission,agentName})
-    });
-    const resp=await r.json();
-    if(resp.success){
-      const l=leads.find(x=>x.ri===ri);
-      if(l){
-        Object.assign(l,{callDone,callResult,followDate,leadStatus,
-          priority,propValue,commission,agentName});
-        if(!followDate)l.status="new";
-        else if(followDate<TODAY)l.status="overdue";
-        else if(followDate===TODAY)l.status="today";
-        else l.status="upcoming";
-        l.isDone=callDone&&callResult.trim()!=="";
-      }
-      document.getElementById("msavedtxt").style.display="block";
-      toast("✓ Updated!");
-      setTimeout(()=>{closeModal();render();},1200);
-    }
-  }catch(e){
-    // If CORS blocks response, the save still went through
-    // Update locally and reload to confirm
-    const l=leads.find(x=>x.ri===ri);
-    if(l){
-      Object.assign(l,{callDone,callResult,followDate,leadStatus,
-        priority,propValue,commission,agentName});
-      if(!followDate)l.status="new";
-      else if(followDate<TODAY)l.status="overdue";
-      else if(followDate===TODAY)l.status="today";
-      else l.status="upcoming";
-      l.isDone=callDone&&callResult.trim()!=="";
-    }
-    toast("✓ Saved — reloading to confirm");
-    setTimeout(()=>{closeModal();load();},1500);
-  }
-  finally{btn.disabled=false;btn.textContent="💾 Save Update";}
+function closeModal() {
+  document.getElementById("mov").classList.remove("open");
+  activeRI = null;
 }
 
-// ════════════════════════════════
+function movTap(e) { if (e.target.id === "mov") closeModal(); }
+
+async function saveModal() {
+  const ri = activeRI;
+  if (!ri) return;
+
+  const callDone   = document.getElementById("m-done").checked;
+  const callResult = document.getElementById("m-res").value.trim();
+  const followDate = document.getElementById("m-dt").value;
+  const leadStatus = document.getElementById("m-st").value;
+  const priority   = document.getElementById("m-pr").value;
+  const propValue  = document.getElementById("m-pv").value;
+  const commission = document.getElementById("m-cm").value;
+  const agentName  = document.getElementById("m-ag").value;
+
+  if (callDone && !callResult) {
+    toast("⚠️ Select a Call Result before marking Done");
+    document.getElementById("m-done").checked = false;
+    return;
+  }
+
+  const btn = document.getElementById("msave");
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+
+  // ── Update local state IMMEDIATELY so UI reflects change ──
+  const l = leads.find(x => x.ri === ri);
+  if (l) {
+    l.callDone   = callDone;
+    l.callResult = callResult;
+    l.followDate = followDate;
+    l.leadStatus = leadStatus;
+    l.priority   = priority;
+    l.propValue  = propValue;
+    l.commission = commission;
+    l.agentName  = agentName;
+
+    // Recalculate status from NEW follow-up date
+    if (!followDate)           l.status = "new";
+    else if (followDate < TODAY) l.status = "overdue";
+    else if (followDate === TODAY) l.status = "today";
+    else                         l.status = "upcoming";
+
+    // Recalculate isDone
+    l.isDone = callDone && callResult !== "";
+  }
+
+  // Show saved message and close modal
+  document.getElementById("msaved").style.display = "block";
+  setTimeout(() => { closeModal(); render(); }, 900);
+
+  // ── Send to Google Sheet in background ──
+  const payload = {
+    action: "updateLead", rowIndex: ri,
+    callDone, callResult, followDate, leadStatus,
+    priority, propValue, commission, agentName,
+  };
+
+  try {
+    await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+    });
+    toast("✓ Saved to sheet!");
+  } catch(e) {
+    // CORS fallback
+    try {
+      await fetch(API, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload),
+      });
+      toast("✓ Sent — refreshing from sheet…");
+      setTimeout(load, 4000);
+    } catch(e2) {
+      toast("⚠️ Sheet sync failed — tap Refresh");
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "💾 Save Update";
+  }
+}
+
+// ═══════════════════════════════════════════
 // ADD LEAD
-// ════════════════════════════════
-function openAdd(){document.getElementById("aov").classList.add("open");}
-function closeAdd(){document.getElementById("aov").classList.remove("open");}
-function aovTap(e){if(e.target.id==="aov")closeAdd();}
+// ═══════════════════════════════════════════
+function openAdd()  { document.getElementById("aov").classList.add("open"); }
+function closeAdd() { document.getElementById("aov").classList.remove("open"); }
+function aovTap(e)  { if (e.target.id === "aov") closeAdd(); }
 
-async function submitLead(){
-  const name =document.getElementById("fn").value.trim();
-  const phone=document.getElementById("fp").value.trim();
-  if(!name){toast("⚠️ Name required");return;}
-  if(!phone){toast("⚠️ Phone required");return;}
+async function submitLead() {
+  const name  = document.getElementById("fn").value.trim();
+  const phone = document.getElementById("fp").value.trim();
+  if (!name)  { toast("⚠️ Name is required");  return; }
+  if (!phone) { toast("⚠️ Phone is required"); return; }
 
-  const btn=document.querySelector(".ashok");
-  btn.textContent="Saving…";btn.disabled=true;
+  const btn = document.getElementById("ashok");
+  btn.textContent = "Saving…";
+  btn.disabled = true;
 
-  const data={action:"addLead",name,phone,
-    whatsapp:document.getElementById("fw").value.trim()||phone,
-    email:document.getElementById("fe").value.trim(),
-    interest:document.getElementById("fi").value,
-    budget:document.getElementById("fb").value,
-    source:document.getElementById("fs")?document.getElementById("fs").value:"Manual entry",
-    location:document.getElementById("fl").value.trim(),
-    followDate:document.getElementById("fd").value,
-    agentName:document.getElementById("fan").value.trim()};
+  const fd = document.getElementById("fd").value;
+  const data = {
+    action    : "addLead",
+    name, phone,
+    whatsapp  : document.getElementById("fw").value.trim() || phone,
+    email     : document.getElementById("fe").value.trim(),
+    interest  : document.getElementById("fi").value,
+    budget    : document.getElementById("fb").value,
+    source    : document.getElementById("fs").value || "Manual entry",
+    location  : document.getElementById("fl").value.trim(),
+    followDate: fd,
+    agentName : document.getElementById("fan").value.trim(),
+  };
 
-  try{
-    // Step 1: try with regular fetch to get rowIndex back
-    const r=await fetch(API,{
-      method:"POST",
-      headers:{"Content-Type":"text/plain"},
-      body:JSON.stringify(data)
+  // ── Add to local list immediately — agent sees it right away ──
+  const tempRI = Date.now();
+  const localLead = norm({ ...data, rowIndex: tempRI, callDone: false, callResult: "" });
+  leads.unshift(localLead);
+  clearAddForm();
+  closeAdd();
+  render();
+  toast("✓ Lead added!");
+
+  // ── Send to sheet in background ──
+  try {
+    const r = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(data),
     });
-    const resp=await r.json();
-    if(resp.rowIndex){
-      leads.unshift(norm({...data,rowIndex:resp.rowIndex,callDone:false,callResult:""}));
+    const resp = await r.json();
+    if (resp.rowIndex) {
+      // Replace temp rowIndex with real sheet row number
+      const idx = leads.findIndex(l => l.ri === tempRI);
+      if (idx > -1) leads[idx].ri = resp.rowIndex;
     }
-    clearAddForm();
-    closeAdd();render();toast("✓ Lead added to sheet!");
-  }catch(e){
-    // CORS fallback: send with no-cors, optimistically add locally
-    try{
-      await fetch(API,{method:"POST",mode:"no-cors",
-        headers:{"Content-Type":"text/plain"},body:JSON.stringify(data)});
-      leads.unshift(norm({...data,rowIndex:Date.now(),callDone:false,callResult:""}));
-      clearAddForm();
-      closeAdd();render();
-      toast("✓ Sent — reloading from sheet…");
-      setTimeout(load,4000); // reload after 4s to get real data from sheet
-    }catch(e2){
-      toast("⚠️ Could not add lead — check API URL");
+    toast("✓ Saved to sheet!");
+  } catch(e) {
+    try {
+      await fetch(API, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(data),
+      });
+      toast("✓ Sent — refreshing from sheet…");
+      setTimeout(load, 4000);
+    } catch(e2) {
+      toast("⚠️ Sheet sync failed — tap Refresh");
     }
+  } finally {
+    btn.textContent = "💾 Save Lead";
+    btn.disabled = false;
   }
-  finally{btn.textContent="💾 Save Lead";btn.disabled=false;}
 }
 
-function clearAddForm(){
-  ["fn","fp","fw","fe","fl","fan"].forEach(id=>document.getElementById(id).value="");
-  ["fi","fb"].forEach(id=>document.getElementById(id).selectedIndex=0);
-  const fs=document.getElementById("fs");if(fs)fs.selectedIndex=0;
-  document.getElementById("fd").value=TODAY;
+function clearAddForm() {
+  ["fn","fp","fw","fe","fl","fan"].forEach(id => document.getElementById(id).value = "");
+  ["fi","fb","fs"].forEach(id => document.getElementById(id).selectedIndex = 0);
+  document.getElementById("fd").value = TODAY;
 }
 
-// ════════════════════════════════
+// ═══════════════════════════════════════════
+// QUICK ACTIONS
+// ═══════════════════════════════════════════
+function doWA(phone, name) {
+  if (!phone) { toast("No WhatsApp number"); return; }
+  const msg = encodeURIComponent(
+    `Hi ${name}, following up on your property enquiry. Are you still interested?`);
+  window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+}
+
+function doCall(phone) {
+  if (!phone) { toast("No phone number"); return; }
+  window.location.href = "tel:+" + phone;
+}
+
+// ═══════════════════════════════════════════
 // UTILS
-// ════════════════════════════════
-function WA(phone,name){
-  if(!phone){toast("No WhatsApp number");return;}
-  const msg=encodeURIComponent(`Hi ${name}, following up on your enquiry. Are you still interested?`);
-  window.open(`https://wa.me/${phone}?text=${msg}`,"_blank");
+// ═══════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
 }
-function CALL(phone){if(!phone){toast("No phone");return;}window.location.href="tel:+"+phone;}
 
-let toastT;
-function toast(msg){
-  const t=document.getElementById("toast");
-  t.textContent=msg;t.classList.add("show");
-  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3000);
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
 }
-function T(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
-function T2(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
-function V(id,v){const e=document.getElementById(id);if(e)e.value=v||"";}
-function S(v){return(v==null)?"":String(v);}
-function E(v){return S(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function fmtD(d){
-  if(!d)return"";
-  const[y,m,dy]=d.split("-").map(Number);
-  return new Date(y,m-1,dy).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val || "";
 }
-function INI(n){return(n||"?").trim().split(" ").filter(Boolean).map(w=>w[0]).join("").toUpperCase().slice(0,2)||"?";}
-const AVC=["av-g","av-b","av-a","av-r","av-p"];
-function COL(n){let h=0;for(let i=0;i<(n||"").length;i++)h=(h*31+n.charCodeAt(i))&0xffff;return AVC[h%AVC.length];}
+
+function xs(v) { return (v == null) ? "" : String(v); }
+
+function xe(v) {
+  return xs(v)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function fmtDate(d) {
+  if (!d) return "";
+  const [y, m, dy] = d.split("-").map(Number);
+  return new Date(y, m - 1, dy)
+    .toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
+}
+
+function INI(n) {
+  return (n || "?").trim().split(" ").filter(Boolean)
+    .map(w => w[0]).join("").toUpperCase().slice(0, 2) || "?";
+}
+
+const AVC = ["av-g","av-b","av-a","av-r","av-p"];
+function COL(n) {
+  let h = 0;
+  for (let i = 0; i < (n || "").length; i++) h = (h * 31 + n.charCodeAt(i)) & 0xffff;
+  return AVC[h % AVC.length];
+}
 </script>
 </body>
 </html>
